@@ -31,7 +31,7 @@ interface ButtonProps
   disabledTip?: string | TooltipObject;
   classPrefix: string;
   classnames: ClassNamesFn;
-  componentClass: React.ElementType;
+  componentClass: React.ReactType;
   overrideClassName?: boolean;
   loading?: boolean;
   loadingClassName?: string;

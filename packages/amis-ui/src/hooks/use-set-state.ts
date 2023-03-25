@@ -6,7 +6,7 @@ const useSetState = <T extends object>(
 ): [T, (patch: Partial<T> | ((prevState: T) => Partial<T>)) => void] => {
   const [state, setState] = useState<T>(initialState);
 
-  const setMergeState = useCallback((patch: any) => {
+  const setMergeState = useCallback(patch => {
     setState(prevState => ({
       ...prevState,
       ...(isFunction(patch) ? patch(prevState) : patch)

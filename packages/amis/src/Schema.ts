@@ -190,7 +190,6 @@ export type SchemaType =
   | 'mapping'
   | 'markdown'
   | 'nav'
-  | 'number'
   | 'page'
   | 'pagination'
   | 'pagination-wrapper'
@@ -248,7 +247,6 @@ export type SchemaType =
   | 'input-excel'
   | 'input-formula'
   | 'diff-editor'
-  | 'office-viewer'
 
   // editor 系列
   | 'editor'

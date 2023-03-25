@@ -5,8 +5,7 @@ import {
   filter,
   IconCheckedSchema,
   autobind,
-  createObject,
-  insertCustomStyle
+  createObject
 } from 'amis-core';
 import {BaseSchema, SchemaTpl} from '../Schema';
 import {BadgeObject, withBadge} from 'amis-ui';
@@ -77,27 +76,10 @@ export class Icon extends React.Component<IconProps, object> {
   }
 
   render() {
-    const {
-      vendor,
-      classnames: cx,
-      className,
-      style,
-      data,
-      css,
-      id
-    } = this.props;
+    const {vendor, classnames: cx, className, style, data} = this.props;
     let icon = this.props.icon;
 
-    insertCustomStyle(
-      css,
-      [
-        {
-          key: 'className',
-          value: className
-        }
-      ],
-      id
-    );
+    icon = filter(icon, data);
 
     if (typeof icon !== 'string') {
       if (
@@ -125,8 +107,6 @@ export class Icon extends React.Component<IconProps, object> {
 
       return;
     }
-
-    icon = filter(icon, data);
 
     let CustomIcon = getIcon(icon);
     if (CustomIcon) {

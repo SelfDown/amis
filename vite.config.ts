@@ -43,7 +43,14 @@ export default defineConfig({
     }
   },
   server: {
-    port: 8888
+    port: 8888,
+    proxy: {
+      '/template_data/': {
+        target: 'http://10.96.0.70:8080',
+        changeOrigin: true
+
+      }
+    }
   },
   resolve: {
     alias: [

@@ -1,4 +1,12 @@
-import {types, getParent, SnapshotIn, Instance} from 'mobx-state-tree';
+import {
+  types,
+  getParent,
+  SnapshotIn,
+  flow,
+  getEnv,
+  getRoot,
+  Instance
+} from 'mobx-state-tree';
 import {iRendererStore} from './iRenderer';
 import isEqual from 'lodash/isEqual';
 import find from 'lodash/find';
@@ -55,11 +63,10 @@ export const Item = types
     },
 
     get draggable(): boolean {
-      const list = getParent(self, 2) as IListStore;
-
-      return list && list.itemDraggableOn
-        ? evalExpression(list.itemDraggableOn, (self as IItem).locals)
-        : list.draggable;
+      const table = getParent(self, 2) as IListStore;
+      return table && table.itemDraggableOn
+        ? evalExpression(table.itemDraggableOn, (self as IItem).locals)
+        : true;
     }
   }))
   .actions(self => ({

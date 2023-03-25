@@ -11,7 +11,7 @@ import {ColorScale} from 'amis-core';
 import {isPureVariable, resolveVariableAndFilter} from 'amis-core';
 
 export interface TableCellProps extends RendererProps {
-  wrapperComponent?: React.ElementType;
+  wrapperComponent?: React.ReactType;
   column: any;
   contentsOnly?: boolean;
 }
@@ -57,8 +57,8 @@ export class TableCell extends React.Component<TableCellProps> {
       body: _body,
       tpl,
       remark,
-      cellPrefix,
-      cellAffix,
+      prefix,
+      affix,
       isHead,
       colIndex,
       row,
@@ -68,7 +68,6 @@ export class TableCell extends React.Component<TableCellProps> {
     } = this.props;
     const schema = {
       ...column,
-      style: column.innerStyle, // column的innerStyle配置 作为内部组件的style 覆盖column的style
       className: innerClassName,
       type: (column && column.type) || 'plain'
     };
@@ -99,13 +98,13 @@ export class TableCell extends React.Component<TableCellProps> {
       if (!/%$/.test(String(style.width))) {
         body = (
           <div style={{width: style.width}}>
-            {cellPrefix}
+            {prefix}
             {body}
-            {cellAffix}
+            {affix}
           </div>
         );
-        cellPrefix = null;
-        cellAffix = null;
+        prefix = null;
+        affix = null;
         // delete style.width;
       }
     }
@@ -181,9 +180,9 @@ export class TableCell extends React.Component<TableCellProps> {
             data={row.data}
           />
         ) : null}
-        {cellPrefix}
+        {prefix}
         {body}
-        {cellAffix}
+        {affix}
       </Component>
     );
   }

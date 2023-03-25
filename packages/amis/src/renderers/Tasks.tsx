@@ -396,9 +396,7 @@ export default class Task extends React.Component<TaskProps, TaskState> {
             ) : (
               items.map((item, key) => (
                 <tr key={key}>
-                  <td>
-                    <span className={cx('word-break')}>{item.label}</span>
-                  </td>
+                  <td>{item.label}</td>
                   <td>
                     {item.status == loadingStatusCode ? (
                       <Spinner

@@ -7,6 +7,7 @@
 import React from 'react';
 import uniq from 'lodash/uniq';
 import isEqual from 'lodash/isEqual';
+import isEqualWith from 'lodash/isEqualWith';
 import RcMenu, {
   MenuProps as RcMenuProps,
   Divider as RcDivider,
@@ -278,23 +279,13 @@ export class Menu extends React.Component<MenuProps, MenuState> {
   componentDidUpdate(prevProps: MenuProps, prevState: MenuState) {
     const props = this.props;
     const isOpen = prevProps.isOpen;
-    let isNavDiff = prevProps.navigations.length !== props.navigations.length;
-    if (!isNavDiff) {
-      // 顺序也要保持一致
-      for (let [index, item] of props.navigations.entries()) {
-        // 对比navigations中的link属性 否则item中包含很多处理过的属性 甚至包含react组件 对比会引发性能问题
-        // 如果作为组件使用时 可以通过配置link 配置关键对比属性 如果没有 那直接跳过
-        // 如果没有link 就先不对比了
-        if (
-          !item.link ||
-          (item.link && !isEqual(item.link, prevProps.navigations[index].link))
-        ) {
-          isNavDiff = true;
-          break;
-        }
-      }
-    }
-    if (isNavDiff || !isEqual(prevProps.location, props.location)) {
+
+    if (
+      !isEqualWith(prevProps.navigations, props.navigations, (prev, cur) =>
+        isEqual(prev, cur)
+      ) ||
+      !isEqual(prevProps.location, props.location)
+    ) {
       const {transformedNav, activeKey, defaultOpenKeys, openKeys} =
         this.normalizeNavigations({
           ...props,
@@ -545,9 +536,7 @@ export class Menu extends React.Component<MenuProps, MenuState> {
       badge,
       data,
       isActive,
-      collapsed,
-      overflowedIndicator,
-      overflowMaxCount
+      collapsed
     } = this.props;
 
     return list.map((item: NavigationItem, index: number) => {
@@ -605,9 +594,6 @@ export class Menu extends React.Component<MenuProps, MenuState> {
           badge={badge}
           data={data}
           depth={level || 1}
-          order={index}
-          overflowedIndicator={overflowedIndicator}
-          overflowMaxCount={overflowMaxCount}
         />
       );
     });
@@ -649,7 +635,6 @@ export class Menu extends React.Component<MenuProps, MenuState> {
         ? 'vertical-right'
         : 'vertical'
       : 'horizontal';
-    const disableOpen = collapsed || !stacked || (stacked && mode === 'float');
 
     return (
       <MenuContext.Provider
@@ -716,8 +701,12 @@ export class Menu extends React.Component<MenuProps, MenuState> {
           suffix={overflowSuffix ? overflowSuffix : null}
           itemWidth={overflowItemWidth ? overflowItemWidth : null}
           selectedKeys={activeKey != null ? activeKey : []}
-          defaultOpenKeys={disableOpen ? undefined : defaultOpenKeys}
-          openKeys={disableOpen ? undefined : openKeys}
+          defaultOpenKeys={defaultOpenKeys}
+          openKeys={
+            collapsed || !stacked || (stacked && mode === 'float')
+              ? undefined
+              : openKeys
+          }
           onClick={this.handleItemClick}
         >
           {this.renderMenuContent(navigations)}

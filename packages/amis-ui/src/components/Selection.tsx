@@ -14,8 +14,7 @@ import {
   themeable,
   ThemeProps,
   autobind,
-  findTree,
-  flattenTree
+  findTree
 } from 'amis-core';
 import Checkbox from './Checkbox';
 import {Option, Options} from './Select';
@@ -42,8 +41,6 @@ export interface BaseSelectionProps extends ThemeProps, LocaleProps {
   disabled?: boolean;
   onClick?: (e: React.MouseEvent) => void;
   placeholderRender?: (props: any) => JSX.Element | null;
-  checkAll?: boolean;
-  checkAllLabel?: string;
 }
 
 export interface ItemRenderStates {
@@ -156,22 +153,13 @@ export class BaseSelection<
     onChange && onChange(multiple ? newValue : newValue[0]);
   }
 
-  getAvailableOptions() {
-    const {options} = this.props;
-    const flattendOptions = flattenTree(options, item =>
-      item.children ? null : item
-    ).filter(a => a && !a.disabled);
-
-    return flattendOptions as Option[];
-  }
-
   @autobind
   toggleAll() {
     const {value, onChange, option2value, options} = this.props;
 
     let valueArray: Array<Option> = [];
 
-    const availableOptions = this.getAvailableOptions();
+    const availableOptions = options.filter(option => !option.disabled);
     const intersectOptions = this.intersectArray(value, availableOptions);
 
     if (!Array.isArray(value)) {

@@ -1,10 +1,6 @@
 const loadingBody = {
   type: 'service',
   api: '/api/mock2/sample?orderBy=id&orderDir=desc&perPage=10&waitSeconds=10',
-  loadingConfig: {
-    show: true,
-    root: '[role=dialog-body]'
-  },
   body: {
     type: 'page',
     initApi:
@@ -132,6 +128,10 @@ const loadingBody = {
           type: 'crud',
           api: '/api/mock2/sample?orderBy=id&orderDir=desc&waitSeconds=30',
           syncLocation: false,
+          loadingConfig: {
+            show: true,
+            root: 'body'
+          },
           columns: [
             {
               name: 'id',
@@ -177,21 +177,9 @@ export default {
       dialog: {
         size: 'lg',
         title: '提示',
-        body: {
-          ...loadingBody,
-          loadingConfig: {
-            show: true,
-            root: '[role=dialog-body]'
-          }
-        }
+        body: loadingBody
       }
     },
-    {
-      ...loadingBody,
-      loadingConfig: {
-        show: true,
-        root: 'body'
-      }
-    }
+    loadingBody
   ]
 };

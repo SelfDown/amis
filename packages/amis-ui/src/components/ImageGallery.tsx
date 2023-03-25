@@ -29,7 +29,7 @@ export interface ImageAction {
 }
 
 export interface ImageGalleryProps extends ThemeProps, LocaleProps {
-  children: React.ReactNode | Array<React.ReactNode>;
+  children: React.ReactNode;
   modalContainer?: () => HTMLElement;
   /** 操作栏 */
   actions?: ImageAction[];

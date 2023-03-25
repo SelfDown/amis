@@ -921,21 +921,17 @@ export default class Form extends React.Component<FormProps, object> {
     if (!isAlive(store)) {
       return;
     }
-
-    // 提前准备好 onChange 的参数。
-    // 因为 store.data 会在 await 期间被 WithStore.componentDidUpdate 中的 store.initData 改变。导致数据丢失
-    const changeProps = [
-      store.data,
-      difference(store.data, store.pristine),
-      this.props
-    ];
-
     const dispatcher = await dispatchEvent(
       'change',
       createObject(data, store.data)
     );
     if (!dispatcher?.prevented) {
-      onChange && onChange.apply(null, changeProps);
+      onChange &&
+        onChange(
+          store.data,
+          difference(store.data, store.pristine),
+          this.props
+        );
     }
 
     store.clearRestError();
@@ -1091,11 +1087,10 @@ export default class Form extends React.Component<FormProps, object> {
         dispatchEvent('validateSucc', this.props.data);
 
         if (target) {
-          this.submitToTarget(filter(target, values), values);
+          this.submitToTarget(target, values);
           dispatchEvent('submitSucc', createObject(this.props.data, values));
         } else if (action.actionType === 'reload') {
-          action.target &&
-            this.reloadTarget(filter(action.target, values), values);
+          action.target && this.reloadTarget(action.target, values);
         } else if (action.actionType === 'dialog') {
           store.openDialog(data);
         } else if (action.actionType === 'drawer') {
@@ -1194,16 +1189,17 @@ export default class Form extends React.Component<FormProps, object> {
             );
             finalRedirect && env.jumpTo(finalRedirect, action);
           } else if (action.reload || reload) {
-            this.reloadTarget(
-              filter(action.reload || reload!, store.data),
-              store.data
-            );
+            this.reloadTarget(action.reload || reload!, store.data);
           }
 
           action.close && this.closeTarget(action.close);
           return values;
         })
         .catch(reason => {
+          if (reason instanceof SkipOperation) {
+            return;
+          }
+
           onFailed && onFailed(reason, store.errors);
 
           if (throwErrors) {
@@ -1260,8 +1256,7 @@ export default class Form extends React.Component<FormProps, object> {
             action.redirect && filter(action.redirect, store.data);
           redirect && env.jumpTo(redirect, action);
 
-          action.reload &&
-            this.reloadTarget(filter(action.reload, store.data), store.data);
+          action.reload && this.reloadTarget(action.reload, store.data);
           action.close && this.closeTarget(action.close);
         })
         .catch(e => {
@@ -1273,7 +1268,7 @@ export default class Form extends React.Component<FormProps, object> {
     } else if (action.actionType === 'reload') {
       store.setCurrentAction(action);
       if (action.target) {
-        this.reloadTarget(filter(action.target, data), data);
+        this.reloadTarget(action.target, data);
       } else {
         this.receive(data);
       }
@@ -1568,7 +1563,8 @@ export default class Form extends React.Component<FormProps, object> {
        * 2. 表单子项 static: false 或 不配置，跟随父表单
        * 3. 动作控制 表单子项 时，无视配置，优先级最高
        */
-      ...((control as Schema).static || isStatic ? {static: true} : {}),
+      ...(control as Schema).static || isStatic
+        ? {static: true} : {},
       btnDisabled: disabled || form.loading || form.validating,
       onAction: this.handleAction,
       onQuery: this.handleQuery,

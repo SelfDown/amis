@@ -313,7 +313,7 @@ const PickerColumn = forwardRef<{}, PickerColumnProps>((props, ref) => {
 
       const childData = {
         className: 'text-ellipsis',
-        children: text as React.ReactNode
+        children: text
       };
 
       return (

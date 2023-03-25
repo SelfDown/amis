@@ -176,15 +176,6 @@
     right: 0;
   }
 
-  &.#{$ns}Carousel-arrow--always {
-    .#{$ns}Carousel-leftArrow {
-      display: block;
-    }
-    .#{$ns}Carousel-rightArrow {
-      display: block;
-    }
-  }
-
   &:hover {
     .#{$ns}Carousel-leftArrow {
       display: block;

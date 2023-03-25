@@ -131,20 +131,18 @@ test('Renderer:crud stopAutoRefreshWhen', async () => {
 });
 
 test('Renderer:crud loadDataOnce', async () => {
-  const {container, findByRole, findByText} = render(
+  const {container} = render(
     amisRender(
       {
         type: 'page',
         body: {
           type: 'crud',
+          api: '/api/mock2/sample',
           syncLocation: false,
-          api: 'https://3xsw4ap8wah59.cfc-execute.bj.baidubce.com/api/amis-mock/mock2/sample',
           loadDataOnce: true,
-          autoGenerateFilter: true,
-          filterSettingSource: ['version'],
           columns: [
             {
-              name: 'id',
+              name: '__id',
               label: 'ID'
             },
             {
@@ -161,29 +159,11 @@ test('Renderer:crud loadDataOnce', async () => {
             },
             {
               name: 'version',
-              label: 'Engine version',
-              searchable: {
-                type: 'select',
-                name: 'version',
-                label: 'version',
-                placeholder: 'version',
-                clearable: true,
-                multiple: true,
-                searchable: true,
-                checkAll: true,
-                options: ['1', '4', '5'],
-                maxTagCount: 10,
-                extractValue: true,
-                joinValues: false,
-                delimiter: ',',
-                defaultCheckAll: false,
-                checkAllLabel: '全选'
-              }
+              label: 'Engine version'
             },
             {
               name: 'grade',
-              label: 'CSS grade',
-              sortable: true
+              label: 'CSS grade'
             }
           ]
         }
@@ -196,36 +176,7 @@ test('Renderer:crud loadDataOnce', async () => {
   await waitFor(() => {
     expect(container.querySelectorAll('tbody>tr').length > 5).toBeTruthy();
   });
-
-  const select = await findByRole('combobox');
-  fireEvent.click(select);
-  await wait(300);
-
-  const tem4 = container.querySelector('div[title="4"] label');
-  expect(tem4).not.toBeNull();
-  const tem5 = container.querySelector('div[title="5"] label');
-  expect(tem5).not.toBeNull();
-  fireEvent.click(tem4);
-  await wait(300);
-  fireEvent.click(tem5);
-  await wait(300);
-
-  fireEvent.click(select);
-  await wait(100);
-
-  const searchBtn = await findByText('搜索');
-  fireEvent.click(searchBtn);
-
-  await waitFor(() => {
-    expect(container.querySelectorAll('tbody>tr').length > 5).toBeTruthy();
-  });
-
-  expect(
-    container.querySelectorAll('.cxd-Table-tr--1th .cxd-PlainField')[4]
-      ?.innerHTML
-  ).toEqual('4');
   expect(container.querySelector('.cxd-Crud-pager')).not.toBeInTheDocument();
-  expect(container).toMatchSnapshot();
 });
 
 test('Renderer:crud list', async () => {

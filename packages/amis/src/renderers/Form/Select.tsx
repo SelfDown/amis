@@ -571,8 +571,6 @@ class TransferDropdownRenderer extends BaseTransferRenderer<TransferDropDownProp
       loadingConfig,
       labelField,
       showInvalidMatch,
-      checkAll,
-      checkAllLabel,
       overlay
     } = this.props;
 
@@ -626,8 +624,6 @@ class TransferDropdownRenderer extends BaseTransferRenderer<TransferDropDownProp
           virtualListHeight={266}
           labelField={labelField}
           showInvalidMatch={showInvalidMatch}
-          checkAllLabel={checkAllLabel}
-          checkAll={checkAll}
           overlay={overlay}
         />
 

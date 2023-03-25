@@ -21,7 +21,6 @@ export interface AlertProps {
   onClose?: () => void;
   classnames: ClassNamesFn;
   classPrefix: string;
-  children?: React.ReactNode | Array<React.ReactNode>;
 }
 
 export interface AlertState {
@@ -81,7 +80,7 @@ export class Alert extends React.Component<AlertProps, AlertState> {
     const iconNode = icon ? (
       ['string', 'object'].includes(typeof icon) ? (
         typeof icon === 'object' ? (
-          generateIcon(cx, icon as any as IconCheckedSchema, 'icon')
+          generateIcon(cx, icon as IconCheckedSchema, 'icon')
         ) : (
           getIcon(icon as string) && <Icon icon={icon} className={cx(`icon`)} />
         )

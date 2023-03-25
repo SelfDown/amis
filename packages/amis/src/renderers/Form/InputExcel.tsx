@@ -42,11 +42,6 @@ export interface InputExcelControlSchema extends FormBaseControlSchema {
 
   /** 图片解析结果使用 data URI 格式 */
   imageDataURI?: boolean;
-
-  /**
-   * 占位文本提示
-   */
-  placeholder?: string;
 }
 
 export interface ExcelProps
@@ -307,11 +302,12 @@ export default class ExcelControl extends React.PureComponent<
   render() {
     const {
       className,
+      style,
       classnames: cx,
       classPrefix: ns,
+      value,
       disabled,
-      translate: __,
-      placeholder
+      translate: __
     } = this.props;
 
     return (
@@ -332,7 +328,7 @@ export default class ExcelControl extends React.PureComponent<
                     filename: this.state.filename
                   })
                 ) : (
-                  <p>{placeholder ?? __('Excel.placeholder')}</p>
+                  <p>{__('Excel.placeholder')}</p>
                 )}
               </div>
             </section>

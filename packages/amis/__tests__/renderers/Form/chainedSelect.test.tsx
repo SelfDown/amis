@@ -83,7 +83,6 @@ test('Renderer:chained-select', async () => {
       })
     )
   );
-  await wait(500);
 
   await waitFor(() => {
     expect(fetcher).toBeCalledTimes(3);

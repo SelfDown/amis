@@ -310,7 +310,7 @@ exports[`Renderer:steps labelPlacement 1`] = `
     class="cxd-Steps cxd-Steps--Placement-vertical cxd-Steps-- cxd-Steps--horizontal className"
   >
     <li
-      class="cxd-StepsItem is-process cxd-StepsItem-"
+      class="cxd-StepsItem is-wait cxd-StepsItem-"
     >
       <div
         class="cxd-StepsItem-container"
@@ -459,7 +459,7 @@ exports[`Renderer:steps progressDot 1`] = `
     class="cxd-Steps cxd-Steps--Placement-vertical cxd-Steps--ProgressDot cxd-Steps--horizontal className"
   >
     <li
-      class="cxd-StepsItem is-process cxd-StepsItem-ProgressDot"
+      class="cxd-StepsItem is-wait cxd-StepsItem-ProgressDot"
     >
       <div
         class="cxd-StepsItem-container"
@@ -599,12 +599,15 @@ exports[`Renderer:steps status 1`] = `
           class="cxd-StepsItem-containerTail"
         />
         <div
-          class="cxd-StepsItem-containerIcon"
+          class="cxd-StepsItem-containerIcon is-success"
         >
           <span
             class="cxd-StepsItem-icon"
           >
-            1
+            <icon-mock
+              classname="icon icon-check"
+              icon="check"
+            />
           </span>
         </div>
         <div
@@ -614,7 +617,7 @@ exports[`Renderer:steps status 1`] = `
             class="cxd-StepsItem-body"
           >
             <div
-              class="cxd-StepsItem-title cxd-StepsItem-"
+              class="cxd-StepsItem-title cxd-StepsItem- is-success"
             >
               <span
                 class="cxd-StepsItem-ellText"
@@ -643,12 +646,15 @@ exports[`Renderer:steps status 1`] = `
           class="cxd-StepsItem-containerTail"
         />
         <div
-          class="cxd-StepsItem-containerIcon"
+          class="cxd-StepsItem-containerIcon is-success"
         >
           <span
             class="cxd-StepsItem-icon"
           >
-            2
+            <icon-mock
+              classname="icon icon-check"
+              icon="check"
+            />
           </span>
         </div>
         <div
@@ -658,7 +664,7 @@ exports[`Renderer:steps status 1`] = `
             class="cxd-StepsItem-body"
           >
             <div
-              class="cxd-StepsItem-title cxd-StepsItem-"
+              class="cxd-StepsItem-title cxd-StepsItem- is-success"
             >
               <span
                 class="cxd-StepsItem-ellText"
@@ -695,12 +701,15 @@ exports[`Renderer:steps status 1`] = `
           class="cxd-StepsItem-containerTail"
         />
         <div
-          class="cxd-StepsItem-containerIcon"
+          class="cxd-StepsItem-containerIcon is-success"
         >
           <span
             class="cxd-StepsItem-icon"
           >
-            3
+            <icon-mock
+              classname="icon icon-check"
+              icon="check"
+            />
           </span>
         </div>
         <div
@@ -710,7 +719,7 @@ exports[`Renderer:steps status 1`] = `
             class="cxd-StepsItem-body"
           >
             <div
-              class="cxd-StepsItem-title cxd-StepsItem-"
+              class="cxd-StepsItem-title cxd-StepsItem- is-success"
             >
               <span
                 class="cxd-StepsItem-ellText"
@@ -739,7 +748,7 @@ exports[`Renderer:steps with vertical mode 1`] = `
     class="cxd-Steps cxd-Steps--Placement-vertical cxd-Steps--ProgressDot cxd-Steps--vertical className"
   >
     <li
-      class="cxd-StepsItem is-process cxd-StepsItem-ProgressDot"
+      class="cxd-StepsItem is-wait cxd-StepsItem-ProgressDot"
     >
       <div
         class="cxd-StepsItem-container"

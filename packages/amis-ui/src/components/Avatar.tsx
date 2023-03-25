@@ -75,10 +75,7 @@ interface AvatarCmptProps extends ThemeProps {
   /**
    *
    */
-  children?:
-    | React.ReactNode
-    | Array<React.ReactNode>
-    | ((props?: any) => React.ReactNode | Array<React.ReactNode>);
+  children?: JSX.Element | ((props?: any) => JSX.Element);
 }
 
 const prefix = 'Avatar--';
@@ -182,7 +179,7 @@ export class Avatar extends React.Component<AvatarCmptProps, AvatarState> {
     const isImgRender = React.isValidElement(src);
     const isIconRender = React.isValidElement(icon);
 
-    let childrenRender: React.ReactNode | Array<React.ReactNode>;
+    let childrenRender;
 
     let sizeStyle = {};
     let sizeClass = '';
@@ -236,7 +233,7 @@ export class Avatar extends React.Component<AvatarCmptProps, AvatarState> {
     } else if (['string', 'object'].includes(typeof icon)) {
       childrenRender = generateIcon(cx, icon as any);
     } else if (isIconRender) {
-      childrenRender = icon as any;
+      childrenRender = icon;
     } else {
       childrenRender = (
         <span
@@ -244,7 +241,7 @@ export class Avatar extends React.Component<AvatarCmptProps, AvatarState> {
           ref={this.avatarChildrenRef}
           style={scaleStyle}
         >
-          {typeof children === 'function' ? children() : children}
+          {children}
         </span>
       );
     }

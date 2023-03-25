@@ -11,7 +11,7 @@ import {
   resolveRenderer
 } from './factory';
 import {asFormItem} from './renderers/Item';
-import {IScopedContext, ScopedContext} from './Scoped';
+import {ScopedContext} from './Scoped';
 import {Schema, SchemaNode} from './types';
 import {DebugWrapper} from './utils/debug';
 import getExprProperties from './utils/filter-schema';
@@ -207,12 +207,7 @@ export class SchemaRenderer extends React.Component<SchemaRendererProps, any> {
     data: any,
     renderer?: React.Component<RendererProps> // for didmount
   ): Promise<RendererEvent<any> | void> {
-    return await dispatchEvent(
-      e,
-      this.cRef || renderer,
-      this.context as IScopedContext,
-      data
-    );
+    return await dispatchEvent(e, this.cRef || renderer, this.context, data);
   }
 
   renderChild(
@@ -409,8 +404,7 @@ export class SchemaRenderer extends React.Component<SchemaRendererProps, any> {
 
     // style 支持公式
     if (schema.style) {
-      // schema.style是readonly属性
-      schema = {...schema, style: buildStyle(schema.style, detectData)};
+      schema.style = buildStyle(schema.style, detectData);
     }
 
     const isClassComponent = Component.prototype?.isReactComponent;

@@ -166,54 +166,6 @@ export class ChainedSelection extends BaseSelection<
     return this.renderItem(option, index, depth, id, styles);
   }
 
-  renderCheckAll() {
-    const {
-      multiple,
-      checkAll,
-      checkAllLabel,
-      classnames: cx,
-      translate: __,
-      labelClassName,
-      itemClassName
-    } = this.props;
-
-    if (!multiple || !checkAll) {
-      return null;
-    }
-    const availableOptions = this.getAvailableOptions();
-
-    const valueArray = this.valueArray;
-
-    const checkedAll = availableOptions.every(
-      option => valueArray.indexOf(option) > -1
-    );
-    const checkedPartial = availableOptions.some(
-      option => valueArray.indexOf(option) > -1
-    );
-
-    return (
-      <div
-        className={cx(
-          'ChainedSelection-item',
-          'ChainedSelection-checkAll',
-          itemClassName
-        )}
-        onClick={this.toggleAll}
-      >
-        <Checkbox
-          checked={checkedPartial}
-          partial={checkedPartial && !checkedAll}
-          size="sm"
-          labelClassName={labelClassName}
-        />
-
-        <div className={cx('ChainedSelection-itemLabel')}>
-          <span>{__(checkAllLabel)}</span>
-        </div>
-      </div>
-    );
-  }
-
   render() {
     const {
       value,
@@ -378,10 +330,7 @@ export class ChainedSelection extends BaseSelection<
     return (
       <div className={cx('ChainedSelection', className)}>
         {body && body.length ? (
-          <>
-            {this.renderCheckAll()}
-            {body}
-          </>
+          body
         ) : (
           <div className={cx('ChainedSelection-placeholder')}>
             {__(placeholder)}

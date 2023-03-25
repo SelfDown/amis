@@ -433,7 +433,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      // display: inline-block;
+      display: inline-block;
       max-width: 100%;
     }
   }
@@ -497,8 +497,10 @@
       height: var(--Form-input-clearBtn-size);
       top: 0;
 
-      &:hover {
-        fill: var(--Form-input-clearBtn-color-onHover);
+      &:hover > path {
+        &:first-of-type {
+          fill: var(--Form-select-valueIcon-color);
+        }
       }
     }
   }

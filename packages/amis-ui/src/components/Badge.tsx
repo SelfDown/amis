@@ -73,7 +73,6 @@ export interface BadgeProps {
   badge?: BadgeObject;
   classnames: ClassNamesFn;
   data?: any;
-  children?: React.ReactNode | Array<React.ReactNode>;
 }
 
 export class Badge extends React.Component<BadgeProps, object> {
@@ -201,12 +200,7 @@ export class Badge extends React.Component<BadgeProps, object> {
         lineHeight: size + 'px'
       };
       // 当text、overflowCount都为number类型时，进行封顶值处理
-      // 当text从模版字符串解析（text: "${badge}"）数字就会变为字符串
-      // 因此当设置了overflowCount属性时 如果text可以强制转换成数字 那么也进行封顶处理
-      if (
-        typeof overflowCount === 'number' &&
-        (typeof text === 'number' || (text && !isNaN(Number(text))))
-      ) {
+      if (typeof text === 'number' && typeof overflowCount === 'number') {
         text = (
           (text as number) > (overflowCount as number)
             ? `${overflowCount}+`

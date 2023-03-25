@@ -1,5 +1,10 @@
 import {ConditionBuilderConfig} from './config';
-import {ConditionBuilderFields, ConditionBuilderFuncs} from './types';
+import {
+  ConditionBuilderFields,
+  ConditionGroupValue,
+  ConditionBuilderFuncs,
+  ConditionValue
+} from './types';
 import {ThemeProps, themeable, autobind} from 'amis-core';
 import React from 'react';
 import {Icon} from '../icons';
@@ -7,7 +12,6 @@ import ConditionGroup from './Group';
 import ConditionItem from './Item';
 import {FormulaPickerProps} from '../formula/Picker';
 import Button from '../Button';
-import type {ConditionGroupValue, ConditionValue} from 'amis-core';
 
 export interface CBGroupOrItemProps extends ThemeProps {
   builderMode?: 'simple' | 'full';

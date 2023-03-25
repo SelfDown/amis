@@ -76,7 +76,7 @@ function VariableList(props: VariableListProps) {
 
   function onSearch(term: string) {
     const tree = findTree(list, i => ~i.label.indexOf(term));
-    setFilterVars(!term ? list : tree ? [tree] : []);
+    setFilterVars(!term ? list : tree ? [tree] : list);
   }
 
   function renderSearchBox() {

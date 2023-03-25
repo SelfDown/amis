@@ -27,7 +27,7 @@ export interface Props extends ThemeProps, LocaleProps {
   onFilter?: Function;
   filteredValue?: Array<string>;
   filterMultiple?: boolean;
-  popOverContainer?: () => HTMLElement;
+  popOverContainer?: () => Element | Text | null;
   classnames: ClassNamesFn;
   classPrefix: string;
 }
@@ -170,9 +170,7 @@ export class HeadCellFilter extends React.Component<Props, State> {
           (options && options.some((item: any) => item.selected))
         }
         popOverContainer={
-          popOverContainer
-            ? popOverContainer
-            : () => findDOMNode(this) as HTMLElement
+          popOverContainer ? popOverContainer : () => findDOMNode(this)
         }
         selectedKeys={this.state.filteredValue}
         {...filterProps}

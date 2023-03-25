@@ -126,7 +126,6 @@ import './renderers/SparkLine';
 import './renderers/Video';
 import './renderers/Audio';
 import './renderers/Nav';
-import './renderers/Number';
 import './renderers/Tasks';
 import './renderers/Drawer';
 import './renderers/Wrapper';
@@ -150,7 +149,6 @@ import './renderers/Words';
 import './renderers/Password';
 import './renderers/DateRange';
 import './renderers/MultilineText';
-import './renderers/OfficeViewer';
 
 import './compat';
 import './schemaExtend';

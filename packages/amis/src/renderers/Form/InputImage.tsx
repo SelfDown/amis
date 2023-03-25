@@ -339,7 +339,6 @@ export default class ImageControl extends React.Component<
     receiver: '/api/upload',
     hideUploadButton: false,
     placeholder: 'Image.placeholder',
-    placeholderPlacement: 'top',
     joinValues: true,
     extractValue: false,
     delimiter: ',',
@@ -784,11 +783,7 @@ export default class ImageControl extends React.Component<
     });
   }
 
-  async onChange(
-    changeImmediately?: boolean,
-    changeEvent: boolean = true,
-    initAutoFill?: boolean
-  ) {
+  async onChange(changeImmediately?: boolean, changeEvent: boolean = true, initAutoFill?: boolean) {
     const {
       multiple,
       onChange,
@@ -1125,8 +1120,10 @@ export default class ImageControl extends React.Component<
 
         const dispatcher = await this.dispatchEvent('success', {
           ...file, // 保留历史结构
-          item: file,
-          result: ret.data,
+          item: {
+            ...file,
+            ...ret.data
+          },
           value: obj.value
         });
         if (dispatcher?.prevented) {
@@ -1251,8 +1248,7 @@ export default class ImageControl extends React.Component<
         this.setState(
           {
             files: (this.files = files)
-          },
-          () => {
+          }, () => {
             if (!needUploading) {
               this.onChange(false, true, this.initAutoFill);
             }
@@ -1343,7 +1339,6 @@ export default class ImageControl extends React.Component<
       style,
       classnames: cx,
       placeholder,
-      placeholderPlacement,
       disabled,
       multiple,
       accept,
@@ -1684,7 +1679,7 @@ export default class ImageControl extends React.Component<
                         style={frameImageStyle}
                         onClick={this.handleSelect}
                         data-tooltip={__(placeholder)}
-                        data-position={placeholderPlacement}
+                        data-position="right"
                         ref={this.frameImageRef}
                       >
                         {filterFrameImage ? (

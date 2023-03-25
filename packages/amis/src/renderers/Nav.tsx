@@ -1,6 +1,5 @@
 import React from 'react';
 import {findDOMNode} from 'react-dom';
-import isEqual from 'lodash/isEqual';
 import {
   Renderer,
   RendererEnv,
@@ -30,6 +29,7 @@ import {BadgeObject} from 'amis-ui';
 import {RemoteOptionsProps, withRemoteConfig} from 'amis-ui';
 import {Spinner, Menu} from 'amis-ui';
 import {ScopedContext, IScopedContext} from 'amis-core';
+import isEqual from 'lodash/isEqual';
 import type {NavigationItem} from 'amis-ui/lib/components/menu';
 import type {MenuItemProps} from 'amis-ui/lib/components/menu/MenuItem';
 
@@ -254,11 +254,6 @@ export interface NavSchema extends BaseSchema {
    * 自定义展开图标位置 默认在前面 before after
    */
   expandPosition?: string;
-
-  /**
-   * 主题配色 默认light
-   */
-  themeColor?: 'light' | 'dark';
 }
 
 export interface Link {
@@ -356,8 +351,8 @@ export class Navigation extends React.Component<
       });
     }
 
-    await onSelect?.(link, depth);
-    return false;
+    const result = await onSelect?.(link, depth);
+    return result;
   }
 
   @autobind
@@ -409,10 +404,8 @@ export class Navigation extends React.Component<
       overflow && overflow.enable ? overflow.wrapperComponent || 'ul' : 'ul';
     if (
       dragOnSameLevel &&
-      // menu里原来menuItem套了一层div 后来改成了ul 这里的判断条件需要加限制
-      // 否则始终不相等
-      this.dragNode?.node.closest(`${wrapperComponent}[role="menu"]`) !==
-        target?.closest(`${wrapperComponent}[role="menu"]`)
+      this.dragNode?.node.closest(wrapperComponent) !==
+        target?.closest(wrapperComponent)
     ) {
       this.setState({dropIndicator: undefined});
       this.dropInfo = null;
@@ -427,40 +420,25 @@ export class Navigation extends React.Component<
     }
     const ul = (findDOMNode(this) as HTMLElement).firstChild as HTMLElement;
     if (position === 'self') {
-      const dropIndicator = {
-        top: rect.top - ul.getBoundingClientRect().top,
-        left,
-        width: ul.getBoundingClientRect().width - left,
-        height,
-        opacity: 0.2
-      };
-      // 尽量减少dropIndicator的更新 否则到saas里会比较卡
-      if (
-        !this.state.dropIndicator ||
-        (this.state.dropIndicator &&
-          !isEqual(this.state.dropIndicator, dropIndicator))
-      ) {
-        this.setState({
-          dropIndicator
-        });
-      }
+      this.setState({
+        dropIndicator: {
+          top: rect.top - ul.getBoundingClientRect().top,
+          left,
+          width: ul.getBoundingClientRect().width - left,
+          height,
+          opacity: 0.2
+        }
+      });
     } else {
-      const dropIndicator = {
-        top:
-          (position === 'bottom' ? rect.top + rect.height : rect.top) -
-          ul.getBoundingClientRect().top,
-        left,
-        width: ul.getBoundingClientRect().width - left
-      };
-      if (
-        !this.state.dropIndicator ||
-        (this.state.dropIndicator &&
-          !isEqual(this.state.dropIndicator, dropIndicator))
-      ) {
-        this.setState({
-          dropIndicator
-        });
-      }
+      this.setState({
+        dropIndicator: {
+          top:
+            (position === 'bottom' ? rect.top + rect.height : rect.top) -
+            ul.getBoundingClientRect().top,
+          left,
+          width: ul.getBoundingClientRect().width - left
+        }
+      });
     }
   }
 
@@ -530,6 +508,7 @@ export class Navigation extends React.Component<
   normalizeNavigations(links: Links, depth: number): Array<NavigationItem> {
     const {
       level,
+      defaultOpenLevel,
       stacked,
       mode,
       itemActions,
@@ -658,7 +637,6 @@ export class Navigation extends React.Component<
       indentSize,
       accordion,
       draggable,
-      themeColor,
       expandPosition,
       render
     } = this.props;
@@ -673,16 +651,14 @@ export class Navigation extends React.Component<
       } = overflow;
       overflowedIndicator = (
         <span className={cx(overflowClassName)}>
-          <>
-            {getIcon(overflowIndicator!) ? (
-              <Icon icon={overflowIndicator} className="icon" />
-            ) : (
-              generateIcon(cx, overflowIndicator, 'Nav-itemIcon')
-            )}
-            {overflowLabel && isObject(overflowLabel)
-              ? render('nav-overflow-label', overflowLabel)
-              : overflowLabel}
-          </>
+          {getIcon(overflowIndicator!) ? (
+            <Icon icon={overflowIndicator} className="icon" />
+          ) : (
+            generateIcon(cx, overflowIndicator, 'Nav-itemIcon')
+          )}
+          {overflowLabel && isObject(overflowLabel)
+            ? render('nav-overflow-label', overflowLabel)
+            : overflowLabel}
         </span>
       );
     }
@@ -705,7 +681,7 @@ export class Navigation extends React.Component<
               isOpen={(item: NavigationItem) => !!item.open}
               stacked={!!stacked}
               mode={mode}
-              themeColor={themeColor}
+              location={location}
               onSelect={this.handleClick}
               onToggle={this.toggleLink}
               renderLink={(link: MenuItemProps) => link.link}
@@ -814,8 +790,8 @@ const ConditionBuilderWithRemoteOptions = withRemoteConfig({
         location,
         level,
         defaultOpenLevel,
-        dispatchEvent,
-        store
+        config,
+        dispatchEvent
       } = props;
 
       const isActive = (link: Link, depth: number) => {
@@ -875,10 +851,11 @@ const ConditionBuilderWithRemoteOptions = withRemoteConfig({
       );
 
       const currentActiveItems = getActiveItems(links, 1, level);
-      const prevActiveItems = getActiveItems(store.config, 1, level);
+      const prevActiveItems = getActiveItems(config, 1, level);
+
       setTimeout(() => {
         if (!isEqual(currentActiveItems, prevActiveItems)) {
-          dispatchEvent('change', {value: currentActiveItems});
+          dispatchEvent('change', {activeItems: currentActiveItems});
         }
       }, 0);
     }
@@ -963,16 +940,21 @@ const ConditionBuilderWithRemoteOptions = withRemoteConfig({
       }
     }
 
+    getCurrentLink(key: string) {
+      let link = null;
+      const {config, data} = this.props;
+      const id = resolveVariableAndFilter(key, data, '| raw');
+      if (key) {
+        link = findTree(config, item => item.label == id || item.key == id);
+      }
+      return link;
+    }
+
     componentDidUpdate(prevProps: any, prevState: any) {
       if (!isEqual(this.props.location, prevProps.location)) {
         this.props.updateConfig(this.props.config, 'location-change');
       } else if (!isEqual(this.props.links, prevProps.links)) {
         this.props.updateConfig(this.props.links, 'update');
-      }
-
-      // 外部修改defaultOpenLevel 会影响菜单的unfolded属性
-      if (prevProps.defaultOpenLevel !== this.props.defaultOpenLevel) {
-        this.props.updateConfig(this.props.config, 'update');
       }
 
       if (prevProps.collapsed !== this.props.collapsed) {
@@ -984,16 +966,6 @@ const ConditionBuilderWithRemoteOptions = withRemoteConfig({
           collapsed: this.state.collapsed
         });
       }
-    }
-
-    getCurrentLink(key: string) {
-      let link = null;
-      const {config, data} = this.props;
-      const id = resolveVariableAndFilter(key, data, '| raw');
-      if (key) {
-        link = findTree(config, item => item.label == id || item.key == id);
-      }
-      return link;
     }
 
     async toggleLink(target: Link, depth: number, forceFold?: boolean) {
@@ -1073,7 +1045,7 @@ const ConditionBuilderWithRemoteOptions = withRemoteConfig({
           ) as number[];
           // 插入节点之后
           if (position === 'bottom') {
-            idx && idx.push((idx.pop() as number) + 1);
+            idx.push((idx.pop() as number) + 1);
           }
           links = spliceTree(links, idx, 0, dragLink);
         }
@@ -1141,11 +1113,11 @@ const ConditionBuilderWithRemoteOptions = withRemoteConfig({
       });
 
       if (rendererEvent?.prevented) {
-        return;
+        return true;
       }
 
       if (onSelect && onSelect(link) === false) {
-        return;
+        return true;
       }
 
       // 叶子节点点击也会默认选中
@@ -1159,18 +1131,16 @@ const ConditionBuilderWithRemoteOptions = withRemoteConfig({
           }),
           'select'
         );
-        return;
+        return true;
       }
 
       if (link.expandMore) {
         this.expandLink(link);
-        return;
+        return false;
       }
 
-      if (!link.to) {
-        return;
-      }
       env?.jumpTo(filter(link.to as string, data), link as any);
+      return true;
     }
 
     render() {
@@ -1207,7 +1177,7 @@ export class NavigationRenderer extends React.Component<RendererProps> {
     | {
         loadConfig: (ctx?: any) => Promise<any> | void;
         setConfig: (value: any) => void;
-        syncConfig: () => void;
+        setFilterConfig: (value: any) => void;
       }
     | undefined = undefined;
 
@@ -1228,14 +1198,6 @@ export class NavigationRenderer extends React.Component<RendererProps> {
     scoped.registerComponent(this);
   }
 
-  componentDidUpdate(prevProps: any) {
-    // 在saas中 source可能切换 需要实时更新source数据源
-    // 仅支持source为变量情况下自动更新 如果source配置了api 需要配置trackExpression
-    if (this.remoteRef && this.props.source !== prevProps.source) {
-      this.remoteRef.syncConfig();
-    }
-  }
-
   componentWillUnmount() {
     const scoped = this.context as IScopedContext;
     scoped.unRegisterComponent(this);
@@ -1248,15 +1210,14 @@ export class NavigationRenderer extends React.Component<RendererProps> {
     }
   ) {
     const actionType = action?.actionType as any;
-    const value = args?.value || action.data.value;
     if (actionType === 'updateItems') {
       let children: Array<Link> = [];
-      if (value) {
-        if (Array.isArray(value)) {
+      if (args.value) {
+        if (Array.isArray(args.value)) {
           // 只展示触发项的children属性
           // 多个的话 默认只展示第一个
-          if (value.length > 0) {
-            const item = value.find(
+          if (args.value.length > 0) {
+            const item = args.value.find(
               item => item.children && item.children.length
             );
             if (item) {
@@ -1267,8 +1228,8 @@ export class NavigationRenderer extends React.Component<RendererProps> {
               }
             }
           }
-        } else if (typeof value === 'string') {
-          const currentLink = this.navRef.getCurrentLink(value);
+        } else if (typeof args.value === 'string') {
+          const currentLink = this.navRef.getCurrentLink(args.value);
           this.navRef.setState({
             currentKey: currentLink.key || currentLink.label
           });
@@ -1289,7 +1250,9 @@ export class NavigationRenderer extends React.Component<RendererProps> {
       }
     } else if (actionType === 'collapse') {
       const collapsed =
-        typeof value !== 'undefined' ? value : !this.navRef.state.collapsed;
+        args && typeof args.value !== 'undefined'
+          ? args.value
+          : !this.navRef.state.collapsed;
 
       this.navRef.setState({collapsed});
     } else if (actionType === 'reset') {

@@ -27,7 +27,7 @@ export function withRootStore<
       static ComposedComponent = ComposedComponent as React.ComponentType<T>;
 
       render() {
-        const rootStore: IRendererStore = this.context as any;
+        const rootStore = this.context;
         const injectedProps: {
           rootStore: IRendererStore;
         } = {

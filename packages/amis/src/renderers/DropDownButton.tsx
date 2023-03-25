@@ -105,8 +105,6 @@ export interface DropdownButtonSchema extends BaseSchema {
    * 菜单 CSS 样式
    */
   menuClassName?: string;
-
-  overlayPlacement?: string;
 }
 
 export interface DropDownButtonProps
@@ -142,12 +140,11 @@ export default class DropDownButton extends React.Component<
 
   static defaultProps: Pick<
     DropDownButtonProps,
-    'placement' | 'tooltipTrigger' | 'tooltipRootClose' | 'overlayPlacement'
+    'placement' | 'tooltipTrigger' | 'tooltipRootClose'
   > = {
     placement: 'top',
     tooltipTrigger: ['hover', 'focus'],
-    tooltipRootClose: false,
-    overlayPlacement: 'auto'
+    tooltipRootClose: false
   };
 
   target: any;
@@ -270,8 +267,7 @@ export default class DropDownButton extends React.Component<
       align,
       closeOnClick,
       closeOnOutside,
-      menuClassName,
-      overlayPlacement
+      menuClassName
     } = this.props;
     let body = (
       <RootClose
@@ -302,14 +298,10 @@ export default class DropDownButton extends React.Component<
         }}
       </RootClose>
     );
+
     if (popOverContainer) {
       return (
-        <Overlay
-          container={popOverContainer}
-          target={() => this.target}
-          placement={overlayPlacement}
-          show
-        >
+        <Overlay container={popOverContainer} target={() => this.target} show>
           <PopOver
             overlay
             onHide={this.close}
@@ -352,8 +344,7 @@ export default class DropDownButton extends React.Component<
       isActived,
       trigger,
       data,
-      hideCaret,
-      env
+      hideCaret
     } = this.props;
 
     return (
@@ -376,7 +367,7 @@ export default class DropDownButton extends React.Component<
         <TooltipWrapper
           placement={placement}
           tooltip={disabled ? disabledTip : tooltip}
-          container={tooltipContainer || env?.getModalContainer}
+          container={tooltipContainer}
           trigger={tooltipTrigger}
           rootClose={tooltipRootClose}
         >

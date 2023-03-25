@@ -32,7 +32,6 @@ export interface PopUpPorps extends ThemeProps, LocaleProps {
   showClose?: boolean;
   placement?: 'left' | 'center' | 'right';
   header?: JSX.Element;
-  children?: React.ReactNode | Array<React.ReactNode>;
 }
 
 const fadeStyles: {

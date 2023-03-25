@@ -29,7 +29,6 @@ interface CheckboxProps {
   classnames: ClassNamesFn;
   partial?: boolean;
   optionType?: 'default' | 'button';
-  children?: React.ReactNode | Array<React.ReactNode>;
 }
 
 export class Checkbox extends React.Component<CheckboxProps, any> {
@@ -75,13 +74,12 @@ export class Checkbox extends React.Component<CheckboxProps, any> {
       labelClassName,
       optionType
     } = this.props;
-    const _checked =
-      typeof checked !== 'undefined'
-        ? checked
-        : typeof value === 'undefined'
-        ? value
-        : value == trueValue;
-
+    const _checked = typeof checked !== 'undefined'
+      ? checked
+      : typeof value === 'undefined'
+      ? value
+      : value == trueValue;
+    
     return (
       <label
         className={cx(`Checkbox Checkbox--${type}`, className, {

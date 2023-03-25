@@ -13,7 +13,6 @@ export interface ListMenuProps extends ThemeProps, LocaleProps {
   itemRender: (option: Option) => JSX.Element;
   getItemProps: (props: {item: Option; index: number}) => any;
   prefix?: JSX.Element;
-  children?: React.ReactNode | Array<React.ReactNode>;
 }
 
 interface RenderResult {

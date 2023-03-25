@@ -121,7 +121,6 @@ import type {InputTableColumnProps} from './InputTable';
 import ConfirmBox from './ConfirmBox';
 import DndContainer from './DndContainer';
 import Menu from './menu';
-import InputBoxWithSuggestion from './InputBoxWithSuggestion';
 
 export {
   NotFound,
@@ -180,7 +179,6 @@ export {
   AssociatedSelection,
   ResultBox,
   InputBox,
-  InputBoxWithSuggestion,
   SearchBox,
   ListGroup,
   NumberInput,

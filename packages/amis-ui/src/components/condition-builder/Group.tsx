@@ -1,5 +1,9 @@
 import React from 'react';
-import {ConditionBuilderFields, ConditionBuilderFuncs} from './types';
+import {
+  ConditionBuilderFields,
+  ConditionGroupValue,
+  ConditionBuilderFuncs
+} from './types';
 import {
   ThemeProps,
   themeable,
@@ -7,8 +11,7 @@ import {
   utils,
   localeable,
   LocaleProps,
-  guid,
-  ConditionGroupValue
+  guid
 } from 'amis-core';
 import Button from '../Button';
 import GroupOrItem from './GroupOrItem';

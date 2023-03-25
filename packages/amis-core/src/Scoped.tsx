@@ -21,7 +21,6 @@ import {
 } from './utils/helper';
 import {RendererData, ActionObject} from './types';
 import {isPureVariable} from './utils/isPureVariable';
-import {filter} from './utils';
 
 export interface ScopedComponentType extends React.Component<RendererProps> {
   focus?: () => void;
@@ -37,7 +36,11 @@ export interface ScopedComponentType extends React.Component<RendererProps> {
     ctx?: RendererData
   ) => void;
   context: any;
-  setData?: (value?: object, replace?: boolean, index?: number) => void;
+  setData?: (
+    value?: object,
+    replace?: boolean,
+    index?: number
+  ) => void;
 }
 
 export interface IScopedContext {
@@ -106,8 +109,7 @@ function createScopedTools(
       const resolved = find(
         components,
         component =>
-          filter(component.props.name, component.props.data) === name ||
-          component.props.id === name
+          component.props.name === name || component.props.id === name
       );
       return resolved || (parent && parent.getComponentByName(name));
     },

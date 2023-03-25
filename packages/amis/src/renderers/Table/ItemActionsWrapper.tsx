@@ -5,7 +5,7 @@ import {ClassNamesFn} from 'amis-core';
 
 export interface ItemActionsProps {
   classnames: ClassNamesFn;
-  children: React.ReactNode | Array<React.ReactNode>;
+  children: JSX.Element;
   store: ITableStore;
 }
 

@@ -2,7 +2,6 @@ import React from 'react';
 import {autobind, isMobile, PopOver, Overlay, toNumber} from 'amis-core';
 import PopUp from './PopUp';
 import {findDOMNode} from 'react-dom';
-import isNumber from 'lodash/isNumber';
 
 export type OverlayAlignType = 'left' | 'center' | 'right';
 
@@ -91,10 +90,10 @@ export class PopOverContainer extends React.Component<
     return this.getTarget()?.parentElement;
   }
 
-  static calcOverlayWidth(overlay: PopOverOverlay, targetWidth: number) {
+  static calcOverlayWidth(overlay?: PopOverOverlay) {
     const overlayWidth = overlay && overlay.width;
 
-    if (!overlayWidth || !isNumber(targetWidth) || targetWidth < 1) return;
+    if (!overlayWidth) return;
     // 数字字符串需要转化下，否则不生效
     if (typeof overlayWidth === 'number' || /^\d+$/.test(overlayWidth)) {
       return toNumber(overlayWidth);
@@ -106,11 +105,7 @@ export class PopOverContainer extends React.Component<
     // 带单位的相对值
     // 如: -100px 代表 100% - 100px。+10vw 代表 100% + 10vw
     if (/^(\+|\-)\d+(px|%|rem|em|vw)$/.test(overlayWidth)) {
-      // 不能使用 calc(100% $1 $2)，需要考虑到 popOverContainer
-      return overlayWidth.replace(
-        /^(\+|\-)(.*)/,
-        `calc(${targetWidth}px $1 $2)`
-      );
+      return overlayWidth.replace(/^(\+|\-)(.*)/, 'calc(100% $1 $2)');
     }
 
     return;
@@ -127,10 +122,8 @@ export class PopOverContainer extends React.Component<
 
     return {
       [overlayWidthField || 'minWidth']:
-        PopOverContainer.calcOverlayWidth(
-          {width: overlayWidth},
-          this.target?.offsetWidth
-        ) || (this.target ? Math.max(this.target.offsetWidth, 100) : 'auto')
+        PopOverContainer.calcOverlayWidth({width: overlayWidth}) ||
+        (this.target ? Math.max(this.target.offsetWidth, 100) : 'auto')
     };
   }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {FieldSimple} from './types';
+import {FieldSimple, OperatorType} from './types';
 import {ThemeProps, themeable, localeable, LocaleProps} from 'amis-core';
 import InputBox from '../InputBox';
 import NumberInput from '../NumberInput';
@@ -7,7 +7,6 @@ import DatePicker from '../DatePicker';
 import {SelectWithRemoteOptions as Select} from '../Select';
 import Switch from '../Switch';
 import {FormulaPicker, FormulaPickerProps} from '../formula/Picker';
-import type {OperatorType} from 'amis-core';
 
 export interface ValueProps extends ThemeProps, LocaleProps {
   value: any;
@@ -140,14 +139,11 @@ export class Value extends React.Component<ValueProps> {
       );
     } else if (field.type === 'custom') {
       input = renderEtrValue
-        ? renderEtrValue(
-            {...field.value, name: field.name},
-            {
-              data,
-              onChange,
-              value: value ?? field.defaultValue
-            }
-          )
+        ? renderEtrValue(field.value, {
+            data,
+            onChange,
+            value: value ?? field.defaultValue
+          })
         : null;
     } else {
       const res = value ?? (field as any).defaultValue;

@@ -21,7 +21,6 @@ export interface TagProps extends ThemeProps {
   onClick?: (e: React.MouseEvent) => void;
   onMouseEnter?: (e: React.MouseEvent) => void;
   onMouseLeave?: (e: React.MouseEvent) => void;
-  children?: React.ReactNode | Array<React.ReactNode>;
 }
 
 export interface CheckableTagProps extends TagProps {

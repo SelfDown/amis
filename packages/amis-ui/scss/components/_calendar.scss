@@ -249,9 +249,7 @@
       height: px2rem(36px);
       margin: px2rem(7px) 0;
       border-radius: var(--borderRadiusMd);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: block;
     }
     .is-disabled {
       opacity: 0.5;

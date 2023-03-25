@@ -88,9 +88,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    svg {
-      top: 0;
-    }
 
     &:hover {
       color: var(--Picker-onHover-iconColor);
@@ -101,9 +98,6 @@
     @include input-clear();
     line-height: 1;
     margin-right: var(--gap-xs);
-    svg {
-      top: 0;
-    }
   }
 }
 

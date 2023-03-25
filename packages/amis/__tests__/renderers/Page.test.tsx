@@ -878,7 +878,6 @@ test('Renderer:Page handleAction actionType=drawer mergeData', async () => {
   expect(container).toMatchSnapshot();
 
   fireEvent.click(getByText(/确认/));
-  await wait(300);
   await waitFor(() => {
     expect(container.querySelector('[role="dialog"]')).not.toBeInTheDocument();
   });
@@ -1005,7 +1004,6 @@ test('Renderer:Page handleAction actionType=ajax & feedback', async () => {
   expect(container).toMatchSnapshot();
 
   fireEvent.click(getByText(/确认/));
-  await wait(300);
   await waitFor(() => {
     expect(container.querySelector('[role="dialog"]')).not.toBeInTheDocument();
   });
@@ -1220,7 +1218,6 @@ test('Renderer:Page initApi reload by Dialog action', async () => {
   expect(container).toMatchSnapshot();
   fireEvent.click(getByText(/确认/));
 
-  await wait(500);
   await waitFor(() => {
     expect(container.querySelector('[role="dialog"]')).not.toBeInTheDocument();
     expect(getByText('The variable value is 2')).toBeInTheDocument();

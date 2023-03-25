@@ -184,8 +184,7 @@ export function themeable<
       }
 
       render() {
-        const theme: string =
-          this.props.theme || (this.context as string) || defaultTheme;
+        const theme: string = this.props.theme || this.context || defaultTheme;
         const config = hasTheme(theme)
           ? getTheme(theme)
           : getTheme(defaultTheme);

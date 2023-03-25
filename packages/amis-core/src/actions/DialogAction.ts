@@ -113,8 +113,7 @@ export class ConfirmAction implements RendererAction {
     renderer: ListenerContext,
     event: RendererEvent<any>
   ) {
-    const confirmed = await event.context.env.confirm?.(action.args?.msg, action.args?.title);
-    return confirmed;
+    event.context.env.confirm?.(action.args?.msg, action.args?.title);
   }
 }
 

@@ -38,10 +38,18 @@ export function normalizeApi(
   if (typeof api === 'string') {
     let method = rSchema.test(api) ? RegExp.$1 : '';
     method && (api = api.replace(method + ':', ''));
+    let service = '';
+    // 判断是否xxx[xxx]格式
+    if (api.includes('[') && api.includes(']')) {
+      let tmp = api.split('[');
+      api = tmp[0];
+      service = tmp[1].split(']')[0];
 
+    }
     api = {
       method: (method || defaultMethod) as any,
-      url: api
+      url: api,
+      service: service
     };
   } else {
     api = {
@@ -62,6 +70,14 @@ export function buildApi(
   } = {}
 ): ApiObject {
   api = normalizeApi(api, options.method);
+  if (api.service && data) {
+
+    // @ts-ignore
+    data.service = api.service;
+    if (api.data){
+      api.data.service=api.service
+    }
+  }
   const {autoAppend, ignoreData, ...rest} = options;
 
   api.config = {
@@ -135,10 +151,10 @@ export function buildApi(
       query,
       (api as ApiObject)?.filterEmptyQuery
         ? {
-            filter: (key: string, value: any) => {
-              return value === '' ? undefined : value;
-            }
+          filter: (key: string, value: any) => {
+            return value === '' ? undefined : value;
           }
+        }
         : undefined
     );
 
@@ -313,7 +329,8 @@ export function str2function(
   }
 }
 
-const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+const AsyncFunction = Object.getPrototypeOf(async function() {
+}).constructor;
 
 export function str2AsyncFunction(
   contents: string,
@@ -426,8 +443,8 @@ export function responseAdaptor(ret: fetcherResult, api: ApiObject) {
         {api},
         (Array.isArray(payload.data)
           ? {
-              items: payload.data
-            }
+            items: payload.data
+          }
           : payload.data) || {}
       ),
       undefined,
@@ -449,7 +466,7 @@ export function wrapFetcher(
     return fn as any;
   }
 
-  const wrappedFetcher = function (api: Api, data: object, options?: object) {
+  const wrappedFetcher = function(api: Api, data: object, options?: object) {
     api = buildApi(api, data, options) as ApiObject;
 
     if (api.requestAdaptor) {
@@ -531,22 +548,22 @@ export function wrapAdaptor(promise: Promise<fetcherResult>, api: ApiObject) {
   const adaptor = api.adaptor;
   return adaptor
     ? promise
-        .then(async response => {
-          debug('api', 'before adaptor data', (response as any).data);
-          let result = adaptor((response as any).data, response, api);
+      .then(async response => {
+        debug('api', 'before adaptor data', (response as any).data);
+        let result = adaptor((response as any).data, response, api);
 
-          if (result?.then) {
-            result = await result;
-          }
+        if (result?.then) {
+          result = await result;
+        }
 
-          debug('api', 'after adaptor data', result);
+        debug('api', 'after adaptor data', result);
 
-          return {
-            ...response,
-            data: result
-          };
-        })
-        .then(ret => responseAdaptor(ret, api))
+        return {
+          ...response,
+          data: result
+        };
+      })
+      .then(ret => responseAdaptor(ret, api))
     : promise.then(ret => responseAdaptor(ret, api));
 }
 
@@ -604,7 +621,7 @@ export function jsonpFetcher(api: ApiObject): Promise<fetcherResult> {
     const jsonp = api.query?.callback || 'axiosJsonpCallback' + uuid();
     const old = (window as any)[jsonp];
 
-    (window as any)[jsonp] = function (responseData: any) {
+    (window as any)[jsonp] = function(responseData: any) {
       (window as any)[jsonp] = old;
 
       const response = {
@@ -624,14 +641,14 @@ export function jsonpFetcher(api: ApiObject): Promise<fetcherResult> {
     src += (src.indexOf('?') >= 0 ? '&' : '?') + qsstringify(additionalParams);
 
     // @ts-ignore IE 为script.onreadystatechange
-    script.onload = script.onreadystatechange = function () {
+    script.onload = script.onreadystatechange = function() {
       // @ts-ignore
       if (!script.readyState || /loaded|complete/.test(script.readyState)) {
         remove();
       }
     };
 
-    script.onerror = function () {
+    script.onerror = function() {
       remove();
       const errResponse = {
         status: 0,

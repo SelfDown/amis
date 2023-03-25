@@ -1,4 +1,5 @@
 import React from 'react';
+import {Api} from 'amis-core';
 import {RendererProps} from 'amis-core';
 import {isApiOutdated, isEffectiveApi, normalizeApi} from 'amis-core';
 import {Icon} from 'amis-ui';
@@ -123,6 +124,7 @@ export class HeadCellFilterDropDown extends React.Component<
 
   fetchOptions() {
     const {env, filterable, data} = this.props;
+
     if (!isEffectiveApi(filterable.source, data)) {
       return;
     }

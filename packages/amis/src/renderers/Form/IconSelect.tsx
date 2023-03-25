@@ -92,7 +92,7 @@ export default class IconSelectControl extends React.PureComponent<
         }
       }
     }
-    return findItem || {name: svg, id: '', svg: ''};
+    return findItem || null;
   }
 
   @autobind

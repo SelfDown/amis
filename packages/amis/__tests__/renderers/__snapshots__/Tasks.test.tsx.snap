@@ -40,11 +40,7 @@ exports[`Renderer:tesks 1`] = `
               <tbody>
                 <tr>
                   <td>
-                    <span
-                      class="word-break"
-                    >
-                      hive 任务
-                    </span>
+                    hive 任务
                   </td>
                   <td>
                     <a
@@ -79,11 +75,7 @@ exports[`Renderer:tesks 1`] = `
                 </tr>
                 <tr>
                   <td>
-                    <span
-                      class="word-break"
-                    >
-                      小流量
-                    </span>
+                    小流量
                   </td>
                   <td>
                     <a
@@ -103,11 +95,7 @@ exports[`Renderer:tesks 1`] = `
                 </tr>
                 <tr>
                   <td>
-                    <span
-                      class="word-break"
-                    >
-                      全量
-                    </span>
+                    全量
                   </td>
                   <td>
                     <a

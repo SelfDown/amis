@@ -2,10 +2,15 @@ import React from 'react';
 import {findDOMNode} from 'react-dom';
 import {
   ConditionBuilderFields,
+  ConditionRule,
   ConditionBuilderFuncs,
+  ExpressionFunc,
   ConditionFieldFunc,
   ConditionBuilderField,
-  FieldSimple
+  FieldSimple,
+  ExpressionField,
+  OperatorType,
+  ExpressionComplex
 } from './types';
 import {
   ThemeProps,
@@ -25,14 +30,7 @@ import GroupedSelection from '../GroupedSelection';
 import ResultBox from '../ResultBox';
 
 import {FormulaPickerProps} from '../formula/Picker';
-import type {
-  PlainObject,
-  ConditionRule,
-  OperatorType,
-  ExpressionFunc,
-  ExpressionField,
-  ExpressionComplex
-} from 'amis-core';
+import type {PlainObject} from 'amis-core';
 
 const option2value = (item: any) => item.value;
 

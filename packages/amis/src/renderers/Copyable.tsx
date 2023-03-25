@@ -22,11 +22,6 @@ export interface SchemaCopyableObject {
    * 配置复制时的内容模板。
    */
   content?: SchemaTpl;
-
-  /**
-   * 提示文字内容
-   */
-  tooltip?: string;
 }
 
 export type SchemaCopyable = boolean | SchemaCopyableObject;
@@ -35,7 +30,6 @@ export interface CopyableProps extends RendererProps {
   name?: string;
   label?: string;
   copyable: SchemaCopyable;
-  tooltipContainer?: any;
 }
 
 export const HocCopyable =
@@ -49,27 +43,21 @@ export const HocCopyable =
       }
       render() {
         const {
+          copyable,
           name,
           className,
           data,
           noHoc,
           classnames: cx,
-          translate: __,
-          env,
-          tooltipContainer
+          translate: __
         } = this.props;
-        const copyable = this.props.copyable as SchemaCopyableObject;
 
         if (copyable && !noHoc) {
           const content = filter(
-            copyable.content || '${' + name + ' | raw }',
+            (copyable as SchemaCopyableObject).content ||
+              '${' + name + ' | raw }',
             data
           );
-          const tooltip =
-            copyable?.tooltip != null
-              ? filter(copyable.tooltip, data)
-              : copyable?.tooltip;
-
           if (content) {
             return (
               <Component
@@ -79,12 +67,12 @@ export const HocCopyable =
                 <Component {...this.props} contentsOnly noHoc />
                 <TooltipWrapper
                   placement="right"
-                  tooltip={tooltip ?? __('Copyable.tip')}
+                  tooltip={'点击复制'}
                   trigger="hover"
-                  container={tooltipContainer || env?.getModalContainer}
                 >
                   <a
                     key="edit-btn"
+                    data-tooltip={__('Copyable.tip')}
                     className={cx('Field-copyBtn')}
                     onClick={this.handleClick.bind(this, content)}
                   >

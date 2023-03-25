@@ -21,18 +21,11 @@ import {
   waitFor,
   screen,
   within,
-  getByText,
-  cleanup
+  getByText
 } from '@testing-library/react';
 import '../../../src';
-import {render as amisRender, clearStoresCache} from '../../../src';
+import {render as amisRender} from '../../../src';
 import {makeEnv, wait} from '../../helper';
-
-afterEach(() => {
-  cleanup();
-  clearStoresCache();
-  jest.useRealTimers();
-});
 
 const setup = async (items: any[] = [], env: any = {}) => {
   const onSubmit = jest.fn();
@@ -763,13 +756,12 @@ test('Renderer:combo with addable & addattop & addBtn & addButtonText & addButto
   fireEvent.click(
     container.querySelector('.addAtTopClass .cxd-Combo-toolbar button')!
   );
-  await waitFor(() => {
-    expect(
-      (container.querySelector(
-        '.addAtTopClass .cxd-Combo-item .cxd-TextControl-input input'
-      ) as HTMLInputElement)!.value
-    ).toBe('');
-  });
+  await wait(10);
+  expect(
+    (container.querySelector(
+      '.addAtTopClass .cxd-Combo-item .cxd-TextControl-input input'
+    ) as HTMLInputElement)!.value
+  ).toBe('');
 
   expect(
     container.querySelector('.addableClass .cxd-Combo-toolbar button')!

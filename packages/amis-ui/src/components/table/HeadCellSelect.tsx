@@ -23,7 +23,7 @@ import {Icon} from '../icons';
 export interface Props extends ThemeProps, LocaleProps {
   selections: Array<RowSelectionOptionProps>;
   keys: Array<string | number> | string;
-  popOverContainer?: () => HTMLElement;
+  popOverContainer?: () => Element | Text | null;
   classnames: ClassNamesFn;
   classPrefix: string;
 }
@@ -61,9 +61,7 @@ export class HeadCellSelect extends React.Component<Props, State> {
         filterIcon={<Icon icon="left-arrow" className="icon" />}
         active={false}
         popOverContainer={
-          popOverContainer
-            ? popOverContainer
-            : () => findDOMNode(this) as HTMLElement
+          popOverContainer ? popOverContainer : () => findDOMNode(this)
         }
         filterDropdown={({
           setSelectedKeys,

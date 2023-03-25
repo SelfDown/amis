@@ -876,7 +876,6 @@ export class FormItemWrap extends React.Component<FormItemProps> {
     } = this.props;
 
     const mobileUI = useMobileUI && isMobile();
-
     if (renderControl) {
       const controlSize = size || defaultSize;
       return renderControl({

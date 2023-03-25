@@ -12,13 +12,9 @@ export function matchOptionValue(
     isObject(a) && a && (a as Option).hasOwnProperty(valueField)
       ? (a as Option)[valueField]
       : a;
-  const bValue = b[valueField || 'value'];
   return isObject(aValue)
-    ? isEqual(aValue, bValue)
-    : // 当值均为 undefined 时，不应该判定相等
-      aValue !== undefined &&
-        bValue !== undefined &&
-        String(bValue) === String(aValue);
+    ? isEqual(aValue, b[valueField || 'value'])
+    : String(b[valueField || 'value']) === String(aValue);
 }
 
 export function optionValueCompare(

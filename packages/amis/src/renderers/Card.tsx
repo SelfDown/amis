@@ -298,8 +298,7 @@ export class CardRenderer extends React.Component<CardProps> {
       itemAction,
       onAction,
       onCheck,
-      selectable,
-      checkOnItemClick
+      selectable
     } = this.props;
 
     if (href) {
@@ -316,7 +315,7 @@ export class CardRenderer extends React.Component<CardProps> {
       return;
     }
 
-    selectable && checkOnItemClick && onCheck?.(item);
+    selectable && onCheck?.(item);
   }
 
   handleAction(e: React.UIEvent<any>, action: ActionObject, ctx: object) {
@@ -325,13 +324,7 @@ export class CardRenderer extends React.Component<CardProps> {
     onAction && onAction(e, action, ctx || item.data);
   }
 
-  handleCheck() {
-    // 因为如果 checkOnItemClick 开启
-    // 会把状态标记为选中，如果这里继续执行则又会改回来
-    if (this.props.checkOnItemClick) {
-      return;
-    }
-
+  handleCheck(e: React.MouseEvent<any>) {
     const item = this.props.item;
     this.props.onCheck && this.props.onCheck(item);
   }
@@ -359,6 +352,7 @@ export class CardRenderer extends React.Component<CardProps> {
       selectable,
       checkable,
       selected,
+      checkOnItemClick,
       multiple,
       hideCheckToggler,
       classnames: cx,
@@ -391,10 +385,10 @@ export class CardRenderer extends React.Component<CardProps> {
         <Checkbox
           key="check"
           className={cx('Card-checkbox')}
-          type={multiple !== false ? 'checkbox' : 'radio'}
+          type={multiple ? 'checkbox' : 'radio'}
           disabled={!checkable}
           checked={selected}
-          onChange={this.handleCheck}
+          onChange={checkOnItemClick ? noop : this.handleCheck}
         />
       );
     }

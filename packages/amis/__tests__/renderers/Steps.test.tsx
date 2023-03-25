@@ -50,6 +50,7 @@ test('Renderer:steps status', async () => {
     amisRender(
       {
         type: 'steps',
+        value: 3,
         className: 'className',
         status: {
           a: 'finish',
@@ -92,6 +93,7 @@ test('Renderer:steps labelPlacement', async () => {
     amisRender(
       {
         type: 'steps',
+        value: 'b',
         labelPlacement: 'vertical',
         className: 'className',
         steps: [
@@ -127,6 +129,7 @@ test('Renderer:steps progressDot', async () => {
     amisRender(
       {
         type: 'steps',
+        value: 'b',
         className: 'className',
         progressDot: true,
         steps: [
@@ -160,6 +163,7 @@ test('Renderer:steps with vertical mode', async () => {
   const {container} = render(
     amisRender({
       type: 'steps',
+      value: 'b',
       className: 'className',
       progressDot: true,
       mode: 'vertical',

@@ -30,7 +30,6 @@ export interface GridNavProps {
   itemClassName?: string;
   classnames: ClassNamesFn;
   style?: React.CSSProperties;
-  children?: React.ReactNode | Array<React.ReactNode>;
 }
 
 export interface GridNavItemProps {
@@ -209,6 +208,7 @@ const GridNav: React.FC<GridNavProps> = ({
       className={cx(`GridNav ${className || ''}`, {
         'GridNav-top u-hairline': props.border && !props.gutter
       })}
+      
     >
       {React.Children.toArray(children)
         .filter(Boolean)

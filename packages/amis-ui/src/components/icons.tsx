@@ -115,7 +115,7 @@ export const pauseIcon = <PauseIcon />;
 export const leftArrowIcon = <LeftArrowIcon />;
 export const rightArrowIcon = <RightArrowIcon />;
 const iconFactory: {
-  [propName: string]: React.ElementType<{}>;
+  [propName: string]: React.ReactType<{}>;
 } = {};
 
 export function getIcon(key: string) {
@@ -126,7 +126,7 @@ export function hasIcon(iconName: string) {
   return !!getIcon(iconName);
 }
 
-export function registerIcon(key: string, component: React.ElementType<{}>) {
+export function registerIcon(key: string, component: React.ReactType<{}>) {
   iconFactory[key] = component;
 }
 

@@ -8,8 +8,7 @@ import {
   isObject,
   Renderer,
   RendererProps,
-  ScopedContext,
-  uuid
+  ScopedContext
 } from 'amis-core';
 import {filter} from 'amis-core';
 import {BadgeObject, Button, SpinnerExtraProps} from 'amis-ui';
@@ -585,7 +584,7 @@ export interface ActionProps
     | string
     | Function
     | null;
-  componentClass: React.ElementType;
+  componentClass: React.ReactType;
   tooltipContainer?: any;
   data?: any;
   isMenuItem?: boolean;
@@ -603,7 +602,7 @@ interface ActionState {
 export class Action extends React.Component<ActionProps, ActionState> {
   static defaultProps = {
     type: 'button' as 'button',
-    componentClass: 'button' as React.ElementType,
+    componentClass: 'button' as React.ReactType,
     tooltipPlacement: 'bottom' as 'bottom',
     activeClassName: 'is-active',
     countDownTpl: 'Action.countDown',
@@ -622,10 +621,7 @@ export class Action extends React.Component<ActionProps, ActionState> {
 
   constructor(props: ActionProps) {
     super(props);
-    this.localStorageKey =
-      'amis-countdownend-' +
-      (this.props.name || '') +
-      (this.props?.$schema?.id || uuid());
+    this.localStorageKey = 'amis-countdownend-' + (this.props.name || '');
     const countDownEnd = parseInt(
       localStorage.getItem(this.localStorageKey) || '0'
     );

@@ -383,7 +383,6 @@ export default class CRUD extends React.Component<CRUDProps, any> {
     'onChange',
     'onInit',
     'onSaved',
-    'onSave',
     'onQuery',
     'formStore',
     'autoFillHeight'
@@ -680,7 +679,7 @@ export default class CRUD extends React.Component<CRUDProps, any> {
           const redirect = action.redirect && filter(action.redirect, data);
           redirect && !action.blank && env.jumpTo(redirect, action);
           action.reload
-            ? this.reloadTarget(filter(action.reload, data), data)
+            ? this.reloadTarget(action.reload, data)
             : redirect
             ? null
             : this.search(undefined, undefined, true, true);
@@ -761,6 +760,7 @@ export default class CRUD extends React.Component<CRUDProps, any> {
           ctx
         );
       } else if (action.actionType === 'ajax') {
+
         isEffectiveApi(action.api, ctx) &&
           store
             .saveRemote(action.api as string, ctx, {
@@ -779,7 +779,7 @@ export default class CRUD extends React.Component<CRUDProps, any> {
               }
 
               action.reload
-                ? this.reloadTarget(filter(action.reload, data), data)
+                ? this.reloadTarget(action.reload, data)
                 : this.search(
                     {[pageField || 'page']: 1},
                     undefined,
@@ -891,7 +891,10 @@ export default class CRUD extends React.Component<CRUDProps, any> {
     /** 找出clearValueOnHidden的字段, 保证updateQuery时不会使用上次的保留值 */
     values = {
       ...values,
-      ...pickBy(values?.__super?.diff ?? {}, value => value === undefined)
+      ...pickBy(
+        values?.__super?.diff ?? {},
+        (value) => value === undefined
+      )
     };
     values = syncLocation
       ? qsparse(qsstringify(values, undefined, true))
@@ -1038,7 +1041,7 @@ export default class CRUD extends React.Component<CRUDProps, any> {
 
     const reload = action.reload ?? dialogAction.reload;
     if (reload) {
-      this.reloadTarget(filter(reload, ctx), ctx);
+      this.reloadTarget(reload, ctx);
     }
 
     let redirect = action.redirect ?? dialogAction.redirect;
@@ -1279,7 +1282,7 @@ export default class CRUD extends React.Component<CRUDProps, any> {
         .then(() => {
           const finalReload = options?.reload ?? reload;
           finalReload
-            ? this.reloadTarget(filter(finalReload, data), data)
+            ? this.reloadTarget(finalReload, data)
             : this.search(undefined, undefined, true, true);
         })
         .catch(() => {});
@@ -1301,7 +1304,7 @@ export default class CRUD extends React.Component<CRUDProps, any> {
         .then(() => {
           const finalReload = options?.reload ?? reload;
           finalReload
-            ? this.reloadTarget(filter(finalReload, data), data)
+            ? this.reloadTarget(finalReload, data)
             : this.search(undefined, undefined, true, true);
         })
         .catch(() => {
@@ -1406,7 +1409,7 @@ export default class CRUD extends React.Component<CRUDProps, any> {
       store
         .saveRemote(saveOrderApi, model)
         .then(() => {
-          reload && this.reloadTarget(filter(reload, model), model);
+          reload && this.reloadTarget(reload, model);
           this.search(undefined, undefined, true, true);
         })
         .catch(() => {});
@@ -1894,7 +1897,7 @@ export default class CRUD extends React.Component<CRUDProps, any> {
     return (
       <button
         onClick={() => store.setFilterVisible(!store.filterVisible)}
-        className={cx('Button Button--size-default Button--default', {
+        className={cx('Button Button--sm Button--default', {
           'is-active': store.filterVisible
         })}
       >
@@ -2160,15 +2163,6 @@ export default class CRUD extends React.Component<CRUDProps, any> {
       onSelect,
       autoFillHeight,
       onEvent,
-      onSave,
-      onSaveOrder,
-      onPopOverOpened,
-      onPopOverClosed,
-      onSearchableFromReset,
-      onSearchableFromSubmit,
-      onSearchableFromInit,
-      headerToolbarRender,
-      footerToolbarRender,
       ...rest
     } = this.props;
 
@@ -2187,6 +2181,7 @@ export default class CRUD extends React.Component<CRUDProps, any> {
                 mode: 'inline',
                 submitText: __('search'),
                 ...filter,
+
                 type: 'form',
                 api: null
               },

@@ -213,11 +213,11 @@ function buildColumns(
   columns: Array<ColumnProps> = [],
   thColumns: Array<Array<any>>,
   tdColumns: Array<ColumnProps> = [],
-  maxLevel: number,
   depth: number = 0,
   id?: string,
   fixed?: boolean | string
 ) {
+  const maxLevel = getMaxLevelThRowSpan(columns);
   // 在处理表头时，如果父级column设置了fixed属性，那么所有children保持一致
   Array.isArray(columns) &&
     columns.forEach(column => {
@@ -228,7 +228,7 @@ function buildColumns(
       }
       const newColumn = {
         ...column,
-        rowSpan: childMaxLevel ? 1 : maxLevel - depth,
+        rowSpan: childMaxLevel ? 1 : maxLevel - childMaxLevel + depth,
         colSpan: getThColSpan(column),
         groupId,
         depth
@@ -251,7 +251,6 @@ function buildColumns(
           column.children,
           thColumns,
           tdColumns,
-          maxLevel,
           depth + 1,
           groupId,
           column.fixed
@@ -365,7 +364,7 @@ export class Table extends React.PureComponent<TableProps, TableState> {
 
   @autobind
   getPopOverContainer() {
-    return findDOMNode(this) as HTMLElement;
+    return findDOMNode(this);
   }
 
   // 表头配置
@@ -964,10 +963,7 @@ export class Table extends React.PureComponent<TableProps, TableState> {
     let allRows: Array<any> = [];
     const maxSelectedLength = rowSelection?.maxSelectedLength;
     dataList.forEach(data => {
-      if (
-        !maxSelectedLength ||
-        (!!maxSelectedLength && allRows.length < maxSelectedLength)
-      ) {
+      if (!!maxSelectedLength && allRows.length < maxSelectedLength) {
         allRowKeys.push(data[keyField]);
         allRows.push(data);
         if (!expandable && this.hasChildrenRow(data)) {
@@ -1009,6 +1005,14 @@ export class Table extends React.PureComponent<TableProps, TableState> {
                           }
                           checked={this.state.selectedRowKeys.length > 0}
                           onChange={async value => {
+                            let changeRows;
+                            if (value) {
+                              changeRows = dataList.filter(
+                                data => !this.hasCheckedRows(data)
+                              );
+                            } else {
+                              changeRows = this.selectedRows;
+                            }
                             const selectedRows = value ? allRows : [];
                             const selectedRowKeys = value ? allRowKeys : [];
                             if (onSelectAll) {
@@ -1021,6 +1025,7 @@ export class Table extends React.PureComponent<TableProps, TableState> {
                                 return;
                               }
                             }
+
                             this.setState({selectedRowKeys});
                           }}
                         ></CheckBox>,
@@ -1099,16 +1104,14 @@ export class Table extends React.PureComponent<TableProps, TableState> {
                 }
                 const children = !item.children?.length ? (
                   <span>
-                    <>
-                      {sort}
-                      {filter}
-                      {resizable ? (
-                        <i
-                          className={cx('Table-thead-resizable')}
-                          onMouseDown={e => this.onResizeMouseDown(e, cIndex)}
-                        ></i>
-                      ) : null}
-                    </>
+                    {sort}
+                    {filter}
+                    {resizable ? (
+                      <i
+                        className={cx('Table-thead-resizable')}
+                        onMouseDown={e => this.onResizeMouseDown(e, cIndex)}
+                      ></i>
+                    ) : null}
                   </span>
                 ) : null;
 
@@ -2015,12 +2018,7 @@ export class Table extends React.PureComponent<TableProps, TableState> {
 
     this.thColumns = [];
     this.tdColumns = [];
-    buildColumns(
-      filterColumns,
-      this.thColumns,
-      this.tdColumns,
-      getMaxLevelThRowSpan(filterColumns)
-    );
+    buildColumns(filterColumns, this.thColumns, this.tdColumns);
 
     // 是否设置了纵向滚动
     const hasScrollY = scroll && scroll.y;

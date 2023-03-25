@@ -60,11 +60,6 @@ export type ListBodyFieldObject = {
   labelClassName?: SchemaClassName;
 
   /**
-   * 内层组件的CSS类名
-   */
-  innerClassName?: SchemaClassName;
-
-  /**
    * 绑定字段名
    */
   name?: string;
@@ -327,10 +322,9 @@ export default class List extends React.Component<ListProps, object> {
     } = props;
 
     store.update({
-      /** Card嵌套List情况下该属性获取到的值为ListStore的默认值, 会导致Schema中的配置被覆盖 */
-      multiple: multiple || props?.$schema.multiple,
-      selectable: selectable || props?.$schema.selectable,
-      draggable: draggable || props?.$schema.draggable,
+      multiple,
+      selectable,
+      draggable,
       orderBy,
       orderDir,
       hideCheckToggler,
@@ -1191,7 +1185,7 @@ export class ListItem extends React.Component<ListItemProps> {
         <div className={cx('ListItem-checkBtn')}>
           <Checkbox
             classPrefix={ns}
-            type={multiple !== false ? 'checkbox' : 'radio'}
+            type={multiple ? 'checkbox' : 'radio'}
             disabled={!checkable}
             checked={selected}
             onChange={checkOnItemClick ? noop : this.handleCheck}

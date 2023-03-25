@@ -18,7 +18,6 @@ export interface AnchorNavSectionProps extends ThemeProps {
   body?: Schema; // Schema
   className?: string; // 样式名
   style?: any;
-  children?: React.ReactNode | Array<React.ReactNode>;
 }
 
 class AnchorNavSectionComponent extends React.PureComponent<AnchorNavSectionProps> {
@@ -49,7 +48,6 @@ export interface AnchorNavProps extends ThemeProps {
   ) => JSX.Element; // 锚点区域渲染器
   onSelect?: (key: string | number) => void; // 选中回调方法
   direction?: 'vertical' | 'horizontal'; // 导航方向
-  children?: React.ReactNode | Array<React.ReactNode>;
 }
 
 interface SectionOffset {
@@ -113,9 +111,9 @@ export class AnchorNav extends React.Component<AnchorNavProps, AnchorNavState> {
     children &&
       React.Children.forEach(
         children,
-        (section: React.ReactNode, index: number) => {
+        (section: AnchorNavSectionComponent, index: number) => {
           offsetArr.push({
-            key: (section as JSX.Element).props.name,
+            key: section.props.name,
             offsetTop: (parentNode.children[index] as HTMLElement).offsetTop
           });
         }

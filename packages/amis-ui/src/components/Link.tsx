@@ -24,7 +24,7 @@ export interface LinkProps
   href?: string;
   htmlTarget?: string;
   title?: string;
-  children?: React.ReactNode | Array<React.ReactNode>;
+  children?: JSX.Element;
 }
 
 export class Link extends React.Component<LinkProps, object> {

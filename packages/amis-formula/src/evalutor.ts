@@ -1470,10 +1470,7 @@ export class Evaluator {
    * @returns {number} 时间戳
    */
   fnTIMESTAMP(date: Date, format?: 'x' | 'X') {
-    return parseInt(
-      moment(this.normalizeDate(date)).format(format === 'x' ? 'x' : 'X'),
-      10
-    );
+    return parseInt(moment(date).format(format === 'x' ? 'x' : 'X'), 10);
   }
 
   /**
@@ -1501,116 +1498,18 @@ export class Evaluator {
   }
 
   /**
-   * 获取日期的星期几，
+   * 将日期转成日期字符串
    *
-   * 示例：
-   *
-   * WEEKDAY('2023-02-27') 得到 1
-   *
-   * @example WEEKDAY(date)
-   * @namespace 日期函数
-   * @param {any} date 日期
-   * @param {number} type 星期定义类型，默认为1，1表示0至6代表星期一到星期日，2表示1至7代表星期一到星期日
-   *
-   * @returns {number} 星期几的数字标识
-   */
-  fnWEEKDAY(date: Date | string | number, type?: number) {
-    const md = moment(this.normalizeDate(date));
-    return type === 2 ? md.isoWeekday() : md.weekday();
-  }
-
-  /**
-   * 获取年份的星期，即第几周
-   *
-   * 示例：
-   *
-   * WEEK('2023-03-05') 得到 10
-   *
-   * @example WEEK(date)
-   * @namespace 日期函数
-   * @param {any} date 日期
-   * @param {boolean} isISO 是否ISO星期
-   *
-   * @returns {number} 星期几的数字标识
-   */
-  fnWEEK(date: Date | string | number, isISO = false) {
-    const md = moment(this.normalizeDate(date));
-    return isISO ? md.isoWeek() : md.week();
-  }
-
-  /**
-   * 对日期、日期字符串、时间戳进行格式化
-   *
-   * 示例：
-   *
-   * DATETOSTR('12/25/2022', 'YYYY-MM-DD') 得到 '2022.12.25'
-   * DATETOSTR(1676563200, 'YYYY.MM.DD') 得到 '2023.02.17'
-   * DATETOSTR(1676563200000, 'YYYY.MM.DD hh:mm:ss') 得到 '2023.02.17 12:00:00'
-   * DATETOSTR(DATE('2021-12-21'), 'YYYY.MM.DD hh:mm:ss') 得到 '2021.12.21 08:00:00'
-   *
+   * @example DATETOSTR(date[, format="YYYY-MM-DD HH:mm:ss"])
    * @example DATETOSTR(date, 'YYYY-MM-DD')
    * @namespace 日期函数
-   * @param {any} date 日期对象、日期字符串、时间戳
+   * @param {date} date 日期对象
    * @param {string} format 日期格式，默认为 "YYYY-MM-DD HH:mm:ss"
    *
-   * @returns {string} 日期字符串
+   * @returns {number} 日期字符串
    */
-  fnDATETOSTR(
-    date: Date | string | number,
-    format: string = 'YYYY-MM-DD HH:mm:ss'
-  ) {
-    date = this.normalizeDate(date);
+  fnDATETOSTR(date: Date, format = 'YYYY-MM-DD HH:mm:ss') {
     return moment(date).format(format);
-  }
-
-  /**
-   * 获取日期范围字符串中的开始时间、结束时间
-   *
-   * 示例：
-   *
-   * DATERANGESPLIT('1676563200, 1676735999') 得到 [1676563200, 1676735999]
-   * DATERANGESPLIT('1676563200, 1676735999', undefined , 'YYYY.MM.DD hh:mm:ss') 得到 [2023.02.17 12:00:00, 2023.02.18 11:59:59]
-   * DATERANGESPLIT('1676563200, 1676735999', 0 , 'YYYY.MM.DD hh:mm:ss') 得到 '2023.02.17 12:00:00'
-   * DATERANGESPLIT('1676563200, 1676735999', 'start' , 'YYYY.MM.DD hh:mm:ss') 得到 '2023.02.17 12:00:00'
-   * DATERANGESPLIT('1676563200, 1676735999', 1 , 'YYYY.MM.DD hh:mm:ss') 得到 '2023.02.18 11:59:59'
-   * DATERANGESPLIT('1676563200, 1676735999', 'end' , 'YYYY.MM.DD hh:mm:ss') 得到 '2023.02.18 11:59:59'
-   *
-   * @example DATERANGESPLIT(date, 'YYYY-MM-DD')
-   * @namespace 日期函数
-   * @param {string} date 日期范围字符串
-   * @param {string} key 取值标识，0或'start'表示获取开始时间，1或'end'表示获取结束时间
-   * @param {string} format 日期格式，可选
-   * @param {string} delimiter 分隔符，可选，默认为','
-   *
-   * @returns {string} 日期字符串
-   */
-  fnDATERANGESPLIT(
-    daterange: string,
-    key?: string,
-    format?: string,
-    delimiter = ','
-  ) {
-    if (!daterange || typeof daterange !== 'string') {
-      return daterange;
-    }
-
-    const dateArr = daterange
-      .split(delimiter)
-      .map(item =>
-        item && format
-          ? moment(this.normalizeDate(item.trim())).format(format)
-          : item.trim()
-      );
-
-    if ([0, '0', 'start'].includes(key!)) {
-      return dateArr[0];
-    }
-
-    if ([1, '1', 'end'].includes(key!)) {
-      return dateArr[1];
-    }
-
-    return dateArr;
   }
 
   /**
@@ -1620,12 +1519,12 @@ export class Evaluator {
    * @example STARTOF(date[unit = "day"])
    * @param {date} date 日期对象
    * @param {string} unit 比如可以传入 'day'、'month'、'year' 或者 `week` 等等
-   * @param {string} format 日期格式，可选
    * @returns {date} 新的日期对象
    */
-  fnSTARTOF(date: Date, unit?: any, format?: string) {
-    const md = moment(this.normalizeDate(date)).startOf(unit || 'day');
-    return format ? md.format(format) : md.toDate();
+  fnSTARTOF(date: Date, unit?: any) {
+    return moment(date)
+      .startOf(unit || 'day')
+      .toDate();
   }
 
   /**
@@ -1634,23 +1533,22 @@ export class Evaluator {
    * @example ENDOF(date[unit = "day"])
    * @param {date} date 日期对象
    * @param {string} unit 比如可以传入 'day'、'month'、'year' 或者 `week` 等等
-   * @param {string} format 日期格式，可选
    * @returns {date} 新的日期对象
    */
-  fnENDOF(date: Date, unit?: any, format?: string) {
-    const md = moment(this.normalizeDate(date)).endOf(unit || 'day');
-    return format ? md.format(format) : md.toDate();
+  fnENDOF(date: Date, unit?: any) {
+    return moment(date)
+      .endOf(unit || 'day')
+      .toDate();
   }
 
   normalizeDate(raw: any): Date {
-    if (typeof raw === 'string' || typeof raw === 'number') {
-      let formats = ['', 'YYYY-MM-DD HH:mm:ss', 'X'];
+    if (typeof raw === 'number' || !isNaN(raw)) {
+      return new Date(Number(raw));
+    }
 
-      if (/^\d{10}((\.\d+)*)$/.test(raw.toString())) {
-        formats = ['X', 'x', 'YYYY-MM-DD HH:mm:ss', ''];
-      } else if (/^\d{13}((\.\d+)*)$/.test(raw.toString())) {
-        formats = ['x', 'X', 'YYYY-MM-DD HH:mm:ss', ''];
-      }
+    if (typeof raw === 'string') {
+      const formats = ['', 'YYYY-MM-DD HH:mm:ss', 'X'];
+
       while (formats.length) {
         const format = formats.shift()!;
         const date = moment(raw, format);
@@ -1662,12 +1560,6 @@ export class Evaluator {
     }
 
     return raw;
-  }
-
-  normalizeDateRange(raw: string | Date[]): Date[] {
-    return (Array.isArray(raw) ? raw : raw.split(',')).map((item: any) =>
-      this.normalizeDate(String(item).trim())
-    );
   }
 
   /**
@@ -1868,34 +1760,6 @@ export class Evaluator {
   }
 
   /**
-   * 判断日期是否在指定范围内
-   *
-   * 示例：BETWEENRANGE('2021/12/6', ['2021/12/5','2021/12/7'])
-   *
-   * @param {any} date 第一个日期
-   * @param {any[]} daterange 日期范围
-   * @param {string} unit 单位，默认是 'day'， 即之比较到天
-   * @param {string} inclusivity 包容性规则，默认为'[]'。[ 表示包含、( 表示排除，如果使用包容性参数，则必须传入两个指示符，如'()'表示左右范围都排除
-   * @namespace 日期函数
-   * @example BETWEENRANGE(date, [start, end])
-   * @returns {boolean} 判断结果
-   */
-  fnBETWEENRANGE(
-    date: Date,
-    daterange: Date[],
-    unit: any = 'day',
-    inclusivity: '[]' | '()' | '(]' | '[)' = '[]'
-  ) {
-    const range = this.normalizeDateRange(daterange);
-    return moment(this.normalizeDate(date)).isBetween(
-      range[0],
-      range[1],
-      unit,
-      inclusivity
-    );
-  }
-
-  /**
    * 判断两个日期，是否第一个日期在第二个日期的前面或者相等
    *
    * @param {date} a 第一个日期
@@ -2092,6 +1956,28 @@ export class Evaluator {
   }
 
   /**
+   * 根据对象或者数组的path路径获取值。 如果解析 value 是 undefined 会以 defaultValue 取代
+   *
+   * 示例：
+   *
+   * GET([0, 2, {name: 'amis', age: 18}], 1) 得到 2
+   * GET([0, 2, {name: 'amis', age: 18}], '2.name') 得到 'amis'
+   * GET({arr: [{name: 'amis', age: 18}]}, 'arr[0].name') 得到 'amis'
+   * GET({arr: [{name: 'amis', age: 18}]}, 'arr.0.name') 得到 'amis'
+   * GET({arr: [{name: 'amis', age: 18}]}, 'arr.1.name', 'not-found') 得到 'not-found'
+   *
+   * @param {any} obj 对象或数组
+   * @param {string} path 路径
+   * @param {any} defaultValue 如果解析不到则返回该值
+   * @namespace 其他
+   * @example GET(arr, 2)
+   * @returns {any} 结果
+   */
+  fnGET(obj: any, path: string, defaultValue?: any) {
+    return get(obj, path, defaultValue);
+  }
+
+  /**
    * 数组过滤掉 false、null、0 和 ""
    *
    * 示例：
@@ -2177,66 +2063,12 @@ export class Evaluator {
   }
 
   /**
-   * 将JS对象转换成JSON字符串
-   *
-   * 示例：
-   *
-   * ENCODEJSON({name: 'amis'}) 得到 '{"name":"amis"}'
-   *
-   * @param {object} obj JS对象
-   * @namespace 编码
-   * @example ENCODEJSON({name: 'amis'})
-   * @returns {string} 结果
-   */
-  fnENCODEJSON(obj: object): string {
-    return JSON.stringify(obj);
-  }
-
-  /**
-   * 解析JSON编码数据，返回JS对象
-   *
-   * 示例：
-   *
-   * DECODEJSON('{\"name\": "amis"}') 得到 {name: 'amis'}
-   *
-   * @param {string} str 字符串
-   * @namespace 编码
-   * @example DECODEJSON('{\"name\": "amis"}')
-   * @returns {object} 结果
-   */
-  fnDECODEJSON(str: string): object {
-    return JSON.parse(str);
-  }
-
-  /**
-   * 根据对象或者数组的path路径获取值。 如果解析 value 是 undefined 会以 defaultValue 取代
-   *
-   * 示例：
-   *
-   * GET([0, 2, {name: 'amis', age: 18}], 1) 得到 2
-   * GET([0, 2, {name: 'amis', age: 18}], '2.name') 得到 'amis'
-   * GET({arr: [{name: 'amis', age: 18}]}, 'arr[0].name') 得到 'amis'
-   * GET({arr: [{name: 'amis', age: 18}]}, 'arr.0.name') 得到 'amis'
-   * GET({arr: [{name: 'amis', age: 18}]}, 'arr.1.name', 'not-found') 得到 'not-found'
-   *
-   * @param {any} obj 对象或数组
-   * @param {string} path 路径
-   * @param {any} defaultValue 如果解析不到则返回该值
-   * @namespace 其他
-   * @example GET(arr, 2)
-   * @returns {any} 结果
-   */
-  fnGET(obj: any, path: string, defaultValue?: any) {
-    return get(obj, path, defaultValue);
-  }
-
-  /**
    * 判断是否为类型支持：string, number, array, date, plain-object。
    *
    * @param {string} 判断对象
    * @namespace 其他
    * @example ISTYPE([{a: '1'}, {b: '2'}, {a: '1'}], 'array')
-   * @returns {boolean} 结果
+   * @returns {boolean} 结果结果
    */
   fnISTYPE(
     target: any,
@@ -2265,7 +2097,7 @@ export class Evaluator {
   }
 }
 
-export function getCookie(name: string) {
+function getCookie(name: string) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) {
@@ -2274,7 +2106,7 @@ export function getCookie(name: string) {
   return undefined;
 }
 
-export function parseJson(str: string, defaultValue?: any) {
+function parseJson(str: string, defaultValue?: any) {
   try {
     return JSON.parse(str);
   } catch (e) {
@@ -2282,7 +2114,7 @@ export function parseJson(str: string, defaultValue?: any) {
   }
 }
 
-export function stripNumber(number: number) {
+function stripNumber(number: number) {
   if (typeof number === 'number' && !Number.isInteger(number)) {
     return parseFloat(number.toPrecision(16));
   } else {
@@ -2292,7 +2124,7 @@ export function stripNumber(number: number) {
 
 // 如果只有一个成员，同时第一个成员为 args
 // 则把它展开，当成是多个参数，毕竟公式里面还不支持 ...args 语法，
-export function normalizeArgs(args: Array<any>) {
+function normalizeArgs(args: Array<any>) {
   if (args.length === 1 && Array.isArray(args[0])) {
     args = args[0];
   }
